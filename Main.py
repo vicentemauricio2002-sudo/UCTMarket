@@ -1,8 +1,8 @@
 from kivymd.app import MDApp
-from kivy.uix.screenmanager import Screen
+from kivymd.uix.screen import MDScreen
 
 
-class LoginScreen(Screen):
+class LoginScreen(MDScreen):
 
     def ingresar(self):
         nombre = self.ids.nombre.text
@@ -16,16 +16,18 @@ class LoginScreen(Screen):
         self.manager.current = "principal"
 
 
-class PrincipalScreen(Screen):
+class PrincipalScreen(MDScreen):
     pass
 
 
-class PerfilScreen(Screen):
+class PerfilScreen(MDScreen):
     pass
 
 
 class MarketplaceApp(MDApp):
-    pass
+    def build(self):
+        self.theme_cls.primary_palette = "Azure"
+        self.theme_cls.theme_style = "Light" 
 
 
 MarketplaceApp().run()

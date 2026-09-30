@@ -11,12 +11,12 @@ ScreenManager:
 
 
 <LoginScreen>:
-
+    md_bg_color: app.theme_cls.backgroundColor
     MDBoxLayout:
         orientation: "vertical"
         padding: "50dp"
         spacing: "20dp"
-        md_bg_color: 0.95, 0.96, 0.98, 1
+        theme_text_color: "Primary"
 
         Widget:
             size_hint_y: 0.25
@@ -25,178 +25,204 @@ ScreenManager:
             text: "Marketplace UCT"
             halign: "center"
             font_style: "Headline"
-            theme_text_color: "Custom"
-            text_color: 0.10, 0.20, 0.35, 1
+            theme_text_color: "Primary"
             size_hint_y: None
             height: "60dp"
+        
+        MDScrollView: 
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: "15dp"
+                adaptive_height: True
 
-        MDLabel:
-            text: "Compra, vende e intercambia dentro de la comunidad universitaria"
-            halign: "center"
-            theme_text_color: "Secondary"
-            size_hint_y: None
-            height: "60dp"
+                MDLabel:
+                    text: "Compra, vende e intercambia dentro de la comunidad universitaria"
+                    halign: "center"
+                    theme_text_color: "Secondary"
+                    size_hint_y: None
+                    height: "60dp"
 
-        MDTextField:
-            id: nombre
-            mode: "outlined"
-            size_hint_x: 0.9
-            pos_hint: {"center_x": 0.5}
+                MDTextField:
+                    id: nombre
+                    mode: "outlined"
+                    size_hint_x: 0.9
+                    pos_hint: {"center_x": 0.5}
 
-            MDTextFieldHintText:
-                text: "Ingresa tu nombre"
+                    MDTextFieldHintText:
+                        text: "Ingresa tu nombre"
 
-        Widget:
-            size_hint_y: 0.05
+                Widget:
+                    size_hint_y: 0.05
 
-        MDButton:
-            style: "filled"
-            pos_hint: {"center_x": 0.5}
-            size_hint_x: 0.7
-            on_release: root.ingresar()
+                MDButton:
+                    style: "tonal"
+                    pos_hint: {"center_x": 0.5}
+                    size_hint_x: 0.7
+                    on_release: root.ingresar()
 
-            MDButtonText:
-                text: "Ingresar"
+                    MDButtonText:
+                        text: "Ingresar"
 
-        Widget:
-            size_hint_y: 0.3
+                Widget:
+                    size_hint_y: 0.3
 
 
 <PrincipalScreen>:
-
+    md_bg_color: app.theme_cls.backgroundColor
     MDBoxLayout:
         orientation: "vertical"
-        spacing: "15dp"
-        padding: "15dp"
-        md_bg_color: 0.95, 0.96, 0.98, 1
+        theme_text_color: "Primary"
 
         MDTopAppBar:
-
+            type: "small" 
+            size_hint_y: None
+            theme_bg_color: "Custom"
+            md_bg_color: app.theme_cls.secondaryContainerColor
+            height: "84dp"
             MDTopAppBarTitle:
                 text: "Marketplace UCT"
+        MDScrollView:
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: "15dp"
+                padding: "50dp"
+                adaptive_height: True
 
-        MDTextField:
-            mode: "outlined"
-            size_hint_x: 0.9
-            pos_hint: {"center_x": 0.5}
+                MDLabel:
+                    id: bienvenida
+                    text: "Bienvenido"
+                    font_style: "Title"
+                    theme_text_color: "Primary"
+                    size_hint_y: None
+                    height: "40dp"
 
-            MDTextFieldLeadingIcon:
-                icon: "magnify"
+                MDTextField:
+                    mode: "outlined"
+                    size_hint_x: 0.9
+                    pos_hint: {"center_x": 0.5}
 
-            MDTextFieldHintText:
-                text: "Buscar productos..."
+                    MDTextFieldLeadingIcon:
+                        icon: "magnify"
 
-        MDLabel:
-            text: "Publicaciones recientes"
-            font_style: "Title"
-            theme_text_color: "Custom"
-            text_color: 0.10, 0.20, 0.35, 1
-            size_hint_y: None
-            height: "50dp"
+                    MDTextFieldHintText:
+                        text: "Buscar productos..."
 
-        MDCard:
-            style: "elevated"
-            orientation: "vertical"
-            padding: "15dp"
-            spacing: "5dp"
-            size_hint_y: None
-            height: "150dp"
+                MDLabel:
+                    text: "Publicaciones recientes"
+                    font_style: "Title"
+                    theme_text_color: "Primary"
+                    size_hint_y: None
+                    height: "50dp"
 
-            MDLabel:
-                text: "iPhone 12"
-                font_style: "Title"
+                MDCard:
+                    style: "elevated"
+                    orientation: "vertical"
+                    padding: "15dp"
+                    spacing: "5dp"
+                    size_hint_y: None
+                    height: "150dp"
 
-            MDLabel:
-                text: "$250.000"
+                    MDLabel:
+                        text: "iPhone 12"
+                        font_style: "Title"
 
-            MDLabel:
-                text: "Publicado por estudiante UCT"
+                    MDLabel:
+                        text: "$250.000"
 
-        MDCard:
-            style: "elevated"
-            orientation: "vertical"
-            padding: "15dp"
-            spacing: "5dp"
-            size_hint_y: None
-            height: "150dp"
+                    MDLabel:
+                        text: "Publicado por estudiante UCT"
 
-            MDLabel:
-                text: "Libros de cálculo"
-                font_style: "Title"
+                MDCard:
+                    style: "elevated"
+                    orientation: "vertical"
+                    padding: "15dp"
+                    spacing: "5dp"
+                    size_hint_y: None
+                    height: "150dp"
 
-            MDLabel:
-                text: "$15.000"
+                    MDLabel:
+                        text: "Libros de cálculo"
+                        font_style: "Title"
 
-            MDLabel:
-                text: "Publicado por estudiante UCT"
+                    MDLabel:
+                        text: "$15.000"
 
-        Widget:
+                    MDLabel:
+                        text: "Publicado por estudiante UCT"
 
-        MDButton:
-            style: "filled"
-            pos_hint: {"center_x": 0.5}
-            on_release: root.manager.current = "perfil"
+                Widget:
 
-            MDButtonText:
-                text: "Ver perfil"
+                MDButton:
+                    style: "tonal"
+                    theme_text_color: "Primary"
+                    pos_hint: {"center_x": 0.5}
+                    on_release: root.manager.current = "perfil"
+
+                    MDButtonText:
+                        text: "Ver perfil"
 
 
 <PerfilScreen>:
-
+    md_bg_color: app.theme_cls.backgroundColor
     MDBoxLayout:
         orientation: "vertical"
-        spacing: "20dp"
-        padding: "30dp"
-        md_bg_color: 0.95, 0.96, 0.98, 1
+        theme_text_color: "Primary"
 
         MDTopAppBar:
-
+            type: "small" 
+            size_hint_y: None
+            height: "84dp"
             MDTopAppBarTitle:
-                text: "Mi perfil"
+                text: "Marketplace UCT"
 
-        Widget:
-            size_hint_y: 0.1
+        MDScrollView:
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: "15dp"
+                padding: "50dp"
+                adaptive_height: True
+                Widget:
+                    size_hint_y: 0.1
 
-        MDLabel:
-            text: "👤"
-            halign: "center"
-            font_size: "50sp"
-            size_hint_y: None
-            height: "80dp"
+                MDLabel:
+                    text: "👤"
+                    halign: "center"
+                    font_size: "50sp"
+                    size_hint_y: None
+                    height: "80dp"
 
-        MDLabel:
-            id: nombre_perfil
-            text: "Usuario"
-            halign: "center"
-            font_style: "Headline"
-            theme_text_color: "Custom"
-            text_color: 0.10, 0.20, 0.35, 1
-            size_hint_y: None
-            height: "60dp"
+                MDLabel:
+                    id: nombre_perfil
+                    text: "Usuario"
+                    halign: "center"
+                    font_style: "Headline"
+                    theme_text_color: "Primary"
+                    size_hint_y: None
+                    height: "60dp"
 
-        MDLabel:
-            text: "Mis publicaciones"
-            halign: "center"
-            font_style: "Title"
-            size_hint_y: None
-            height: "50dp"
+                MDLabel:
+                    text: "Mis publicaciones"
+                    halign: "center"
+                    font_style: "Title"
+                    size_hint_y: None
+                    height: "50dp"
 
-        MDButton:
-            style: "outlined"
-            pos_hint: {"center_x": 0.5}
+                MDButton:
+                    style: "outlined"
+                    pos_hint: {"center_x": 0.5}
 
-            MDButtonText:
-                text: "Mis publicaciones"
+                    MDButtonText:
+                        text: "Mis publicaciones"
 
-        Widget:
+                Widget:
 
-        MDButton:
-            style: "filled"
-            pos_hint: {"center_x": 0.5}
-            on_release: root.manager.current = "principal"
+                MDButton:
+                    style: "tonal"
+                    pos_hint: {"center_x": 0.5}
+                    on_release: root.manager.current = "principal"
 
-            MDButtonText:
-                text: "Volver al Marketplace"
+                    MDButtonText:
+                        text: "Volver al Marketplace"
 
-        Widget:
-            size_hint_y: 0.1
+                Widget:
+                    size_hint_y: 0.1
