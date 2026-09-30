@@ -1,5 +1,9 @@
-te explicare el contexto estamos haciendo una aplicación Marketplace (como el de Facebook) para la UCT, ahora mismo necesitamos crear el diseño de esta app usando kivy aplicando todo lo que hemos hecho en los ejercicios anteriores aquí están las instrucciones y rubrica de evaluación, solo necesitamos el diseño de la aplicación no es necesario que tenga funciones activas 
+# Uso IA
 
+## Prompt
+te explicare el contexto estamos haciendo una aplicación Marketplace (como el de Facebook) para la UCT, ahora mismo necesitamos crear el diseño de esta app usando kivy aplicando todo lo que hemos hecho en los ejercicios anteriores aquí están las instrucciones y rubrica de evaluación, solo necesitamos el diseño de la aplicación no es necesario que tenga funciones activas.
+
+## Respuesta
 Perfecto. Ahora que veo la rúbrica completa, cambia un poco el enfoque: ya no estamos haciendo ejercicios aislados, sino la maqueta de la aplicación Marketplace para la UCT. Y sí, podemos reutilizar prácticamente todo lo aprendido: .py, .kv, ScreenManager, get_screen(), MDTextField, MDLabel, MDButton, MDCard, etc.
 
 La rúbrica deja bastante claro qué debemos construir. La evaluación exige una app ejecutable con mínimo 3 pantallas, navegación con ScreenManager, separación .py/.kv y componentes KivyMD.
@@ -8,6 +12,7 @@ La rúbrica deja bastante claro qué debemos construir. La evaluación exige una
 
 Yo propondría inicialmente estas 3 pantallas principales:
 
+```text
                     ┌──────────────┐
                     │   LOGIN      │
                     │              │
@@ -23,10 +28,10 @@ Yo propondría inicialmente estas 3 pantallas principales:
                 │                     │
                 │ Buscar productos... │
                 │                     │
-                │ ┌──────┐ ┌──────┐  │
-                │ │Venta │ │Venta │  │
-                │ │ ...  │ │ ...  │  │
-                │ └──────┘ └──────┘  │
+                │ ┌──────┐ ┌──────┐   │
+                │ │Venta │ │Venta │   │
+                │ │ ...  │ │ ...  │   │
+                │ └──────┘ └──────┘   │
                 │                     │
                 │ Inicio  Perfil      │
                 └──────────┬──────────┘
@@ -35,17 +40,18 @@ Yo propondría inicialmente estas 3 pantallas principales:
                 ┌─────────────────────┐
                 │       PERFIL        │
                 │                     │
-                │       👤            │
+                │         👤         | 
                 │                     │
                 │ Nombre estudiante   │
                 │                     │
                 │ [Mis publicaciones] │
                 │ [Volver]            │
                 └─────────────────────┘
+```
 
 Esto además encaja muy bien con lo que hemos estado practicando.
 
-1. main.py
+### 1. main.py
 
 Aquí pondremos la lógica, no el diseño.
 
@@ -54,7 +60,7 @@ Por ejemplo:
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 
-
+```python
 class LoginScreen(Screen):
 
     def ingresar(self):
@@ -67,7 +73,7 @@ class LoginScreen(Screen):
         perfil.ids.nombre_perfil.text = nombre
 
         self.manager.current = "principal"
-
+        
 
 class PrincipalScreen(Screen):
     pass
@@ -82,6 +88,7 @@ class MarketplaceApp(MDApp):
 
 
 MarketplaceApp().run()
+```
 
 Fíjate que estamos reutilizando exactamente lo que aprendiste:
 
@@ -101,12 +108,13 @@ self.manager.current = "principal"
 
 Eso demuestra el uso de ids, root/manager, get_screen() y ScreenManager.
 
-2. marketplace.kv
+### 2. marketplace.kv
 
 Aquí estará todo el diseño visual.
 
 La primera parte será nuestro ScreenManager:
 
+```kv
 ScreenManager:
 
     LoginScreen:
@@ -117,6 +125,7 @@ ScreenManager:
 
     PerfilScreen:
         name: "perfil"
+```
 
 Y después diseñaremos cada pantalla.
 
@@ -127,6 +136,8 @@ Usaremos:
 MDLabel
 MDTextField
 MDButton
+
+```kv
 <LoginScreen>:
 
     MDBoxLayout:
@@ -152,12 +163,15 @@ MDButton
             text: "Ingresar"
             pos_hint: {"center_x": 0.5}
             on_release: root.ingresar()
-3. Pantalla principal
+```
+
+### 3. Pantalla principal
 
 Aquí es donde la aplicación empieza a parecer realmente un Marketplace.
 
 Podemos colocar:
 
+```text
 Marketplace UCT
 
 [ 🔎 Buscar productos...]
@@ -178,12 +192,14 @@ Publicaciones recientes
 │ Estudiante UCT   │
 └──────────────────┘
 
-             [Inicio] [Perfil]
+        [Inicio] [Perfil]
+```
 
 Para eso podemos utilizar MDCard, que la propia rúbrica menciona como uno de los componentes KivyMD esperados.
 
 Por ejemplo:
 
+```kv
 <PrincipalScreen>:
 
     MDBoxLayout:
@@ -241,10 +257,13 @@ Por ejemplo:
             text: "Ver perfil"
             pos_hint: {"center_x": 0.5}
             on_release: root.manager.current = "perfil"
-4. Perfil
+```
+
+### 4. Perfil
 
 La tercera pantalla:
 
+```kv
 <PerfilScreen>:
 
     MDBoxLayout:
@@ -274,6 +293,8 @@ La tercera pantalla:
             text: "Volver al Marketplace"
             pos_hint: {"center_x": 0.5}
             on_release: root.manager.current = "principal"
+```
+
 ⚠️ Pero hay algo MUY importante de la rúbrica
 
 Aunque me dices que no necesitamos funciones activas, hay que distinguir entre:
@@ -296,6 +317,7 @@ De hecho, la rúbrica dice explícitamente que persistencia, autenticación, not
 
 Para no perder puntos, deberíamos hacer funcionar:
 
+```text
 Ingresar → cambia a Marketplace.
 El nombre ingresado aparece en Marketplace.
 Marketplace → Perfil.
@@ -304,6 +326,7 @@ Botones principales.
 MDTextField.
 ScreenManager.
 get_screen().
+```
 
 Esto importa porque la rúbrica evalúa específicamente que la app ejecute y permita recorrer las pantallas, y que haya interacción mediante botones e inputs.
 
@@ -313,6 +336,7 @@ Es decir: no necesitamos hacer el Marketplace real; necesitamos hacer una maquet
 
 Para este proyecto:
 
+```text
 Marketplace_UCT/
 │
 ├── main.py
@@ -323,6 +347,8 @@ Marketplace_UCT/
 │
 └── assets/
     └── ...
+    
+```
 
 Esto además coincide con el criterio de organización del proyecto de la rúbrica, que pide una estructura ordenada y reproducible.
 
