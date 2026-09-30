@@ -1,6 +1,6 @@
 # Marketplace UCT
 
-Aplicación de escritorio creada con Python, Kivy y KivyMD para mostrar un marketplace universitario. Permite ingresar un nombre, ver publicaciones de ejemplo y abrir el perfil.
+Aplicación de escritorio creada con Python 3.11, Kivy y KivyMD para mostrar un marketplace universitario. Permite ingresar un nombre, ver publicaciones de ejemplo y abrir el perfil.
 
 ## Requisitos previos
 
@@ -20,7 +20,7 @@ cd UCTMarket
 Crea un entorno virtual:
 
 ```powershell
-py -3.11 -m venv venv
+python -m venv venv
 ```
 
 Activa el entorno virtual:
