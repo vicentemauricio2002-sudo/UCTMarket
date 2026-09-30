@@ -40,6 +40,7 @@ Instala las dependencias:
 ```powershell
 python -m pip install --upgrade pip
 ```
+
 ```powershell
 python -m pip install -r requirements.txt
 ```
