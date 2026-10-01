@@ -1,6 +1,6 @@
-Fundamentación UX/UI — Marketplace UCT
+# Fundamentación UX/UI — Marketplace UCT
 
-1. Descripción del proyecto
+## 1. Descripción del proyecto
 
 **Marketplace UCT** es una aplicación orientada a la comunidad universitaria, cuyo objetivo es facilitar la compra, venta, intercambio y publicación de productos y servicios entre sus integrantes.
 
@@ -8,7 +8,7 @@ La propuesta busca centralizar este tipo de actividades en una plataforma enfoca
 
 La interfaz fue desarrollada utilizando **Python, Kivy y KivyMD**, separando la lógica de programación de la interfaz mediante archivos `.py` y `.kv`.
 
-2. Metodología UX/UI
+## 2. Metodología UX/UI
 
 Para el diseño de la aplicación se consideraron principios básicos de UX/UI y los resultados obtenidos durante el proceso de investigación realizado por el equipo.
 
@@ -25,7 +25,7 @@ El proceso se organizó en las siguientes etapas:
 
 El objetivo fue diseñar una interfaz sencilla y fácil de comprender, reduciendo la cantidad de pasos necesarios para acceder a las funciones principales de la aplicación.
 
-3. Usuario objetivo
+## 3. Usuario objetivo
 
 El usuario principal de Marketplace UCT corresponde a integrantes de la comunidad universitaria, principalmente estudiantes interesados en comprar, vender, intercambiar u ofrecer productos y servicios.
 
@@ -37,7 +37,7 @@ Se consideraron características como:
 - Necesidad de identificar al usuario que realiza una publicación.
 - Preferencia por una navegación sencilla y directa.
 
- 4. Hallazgos de la investigación
+## 4. Hallazgos de la investigación
 
 A partir de la investigación realizada por el equipo se identificaron necesidades relacionadas con la compra, venta e intercambio de productos y servicios dentro de la comunidad universitaria.
 
@@ -50,7 +50,7 @@ Los principales hallazgos utilizados para orientar el diseño fueron:
 3. La mayoría esta de acuerdo en que se acepten todos los medios de pago existentes.
 4. Los usuarios confirmaron que utilizarían esta app de manera regular, debemos encontrar una manera de hacer la app más llamativa para su uso.
 
- 5. Decisiones de diseño
+## 5. Decisiones de diseño
 
 La primera pantalla corresponde al acceso a la aplicación.
 
@@ -112,3 +112,5 @@ PrincipalScreen
 PerfilScreen
      │
      └──────────► PrincipalScreen
+
+```
