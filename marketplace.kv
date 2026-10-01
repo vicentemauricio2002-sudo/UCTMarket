@@ -81,6 +81,15 @@ ScreenManager:
             height: "84dp"
             MDTopAppBarTitle:
                 text: "Marketplace UCT"
+
+            MDTopAppBarTrailingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "account"
+                    on_release: root.manager.current = "perfil"
+
+                MDActionTopAppBarButton:
+                    icon: "logout"
+                    on_release: root.manager.current = "login"
         MDScrollView:
             MDBoxLayout:
                 orientation: "vertical"
@@ -121,6 +130,12 @@ ScreenManager:
                     spacing: "5dp"
                     size_hint_y: None
                     height: "150dp"
+                    theme_shadow_offset: "Custom"
+                    shadow_offset: (1, -2)
+                    theme_shadow_softness: "Custom"
+                    shadow_softness: 8
+                    theme_elevation_level: "Custom"
+                    elevation_level: 2
 
                     MDLabel:
                         text: "iPhone 12"
@@ -139,6 +154,12 @@ ScreenManager:
                     spacing: "5dp"
                     size_hint_y: None
                     height: "150dp"
+                    theme_shadow_offset: "Custom"
+                    shadow_offset: (1, -2)
+                    theme_shadow_softness: "Custom"
+                    shadow_softness: 8
+                    theme_elevation_level: "Custom"
+                    elevation_level: 2
 
                     MDLabel:
                         text: "Libros de cálculo"
@@ -150,79 +171,127 @@ ScreenManager:
                     MDLabel:
                         text: "Publicado por estudiante UCT"
 
-                Widget:
-
-                MDButton:
-                    style: "tonal"
-                    theme_text_color: "Primary"
-                    pos_hint: {"center_x": 0.5}
-                    on_release: root.manager.current = "perfil"
-
-                    MDButtonText:
-                        text: "Ver perfil"
 
 
 <PerfilScreen>:
     md_bg_color: app.theme_cls.backgroundColor
     MDBoxLayout:
         orientation: "vertical"
-        theme_text_color: "Primary"
 
+        # 1. Barra superior (igual que ya tienes)
         MDTopAppBar:
-            type: "small" 
+            type: "small"
             size_hint_y: None
+            theme_bg_color: "Custom"
+            md_bg_color: app.theme_cls.secondaryContainerColor
             height: "84dp"
-            MDTopAppBarTitle:
-                text: "Marketplace UCT"
 
+            MDTopAppBarTitle:
+                text: "Mi Perfil"
+
+            MDTopAppBarTrailingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "arrow-left"
+                    on_release: root.manager.current = "principal"
+
+                MDActionTopAppBarButton:
+                    icon: "logout"
+                    on_release: root.manager.current = "login"
+
+     
         MDScrollView:
             MDBoxLayout:
                 orientation: "vertical"
-                spacing: "15dp"
-                padding: "50dp"
+                spacing: "20dp"
+                padding: "30dp"
                 adaptive_height: True
-                Widget:
-                    size_hint_y: 0.1
 
-                MDLabel:
-                    text: "👤"
-                    halign: "center"
-                    font_size: "50sp"
-                    size_hint_y: None
-                    height: "80dp"
-
-                MDLabel:
-                    id: nombre_perfil
-                    text: "Usuario"
-                    halign: "center"
-                    font_style: "Headline"
-                    theme_text_color: "Primary"
-                    size_hint_y: None
-                    height: "60dp"
-
-                MDLabel:
-                    text: "Mis publicaciones"
-                    halign: "center"
-                    font_style: "Title"
-                    size_hint_y: None
-                    height: "50dp"
-
-                MDButton:
+         
+                MDCard:
                     style: "outlined"
+                    orientation: "vertical"
+                    padding: "20dp"
+                    spacing: "25dp"
+                    size_hint_y: None
+                    adaptive_height: True
                     pos_hint: {"center_x": 0.5}
 
-                    MDButtonText:
-                        text: "Mis publicaciones"
+      
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: "48dp"
 
-                Widget:
+                        Widget:
 
-                MDButton:
-                    style: "tonal"
-                    pos_hint: {"center_x": 0.5}
-                    on_release: root.manager.current = "principal"
+                        MDIconButton:
+                            icon: "cog"
+                            theme_icon_color: "Primary"
 
-                    MDButtonText:
-                        text: "Volver al Marketplace"
+                    MDCard:
+                        size_hint: None, None
+                        size: "100dp", "100dp"
+                        radius: [50,]
+                        pos_hint: {"center_x": 0.5}
+                        theme_bg_color: "Custom"
+                        md_bg_color: 0.6, 0.6, 0.6, 1
+                        elevation_level: 0
 
-                Widget:
-                    size_hint_y: 0.1
+                        AnchorLayout:
+                            anchor_x: "center"
+                            anchor_y: "center"
+
+                            MDIconButton:
+                                icon: "account"
+                                icon_size: "60sp"
+                                theme_icon_color: "Custom"
+                                icon_color: 1, 1, 1, 1
+
+                    MDLabel:
+                        id: nombre_perfil
+                        text: "Usuario"
+                        halign: "center"
+                        font_style: "Headline"
+                        theme_text_color: "Primary"
+                        size_hint_y: None
+                        height: "50dp"
+
+                    MDButton:
+                        style: "tonal"
+                        theme_bg_color: "Custom"
+                        md_bg_color: app.theme_cls.secondaryContainerColor
+                        pos_hint: {"center_x": 0.5}
+                        size_hint_x: 0.8
+
+                        MDButtonText:
+                            text: "Mis publicaciones"
+                            theme_text_color: "Custom"
+                            text_color: app.theme_cls.onSecondaryContainerColor
+
+                    MDCard:
+                        style: "elevated"
+                        orientation: "vertical"
+                        padding: "15dp"
+                        spacing: "5dp"
+                        size_hint_y: None
+                        height: "150dp"
+                        theme_shadow_offset: "Custom"
+                        shadow_offset: (1, -2)
+                        theme_shadow_softness: "Custom"
+                        shadow_softness: 8
+                        theme_elevation_level: "Custom"
+                        elevation_level: 2
+
+                        MDLabel:
+                            text: "iPhone 12"
+                            font_style: "Title"
+
+                        MDLabel:
+                            text: "$250.000"
+
+                        MDLabel:
+                            text: "Publicado por estudiante UCT"
+                    
+                    Widget:
+                        size_hint_y: 0.1
+
