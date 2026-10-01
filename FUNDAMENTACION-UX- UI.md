@@ -96,7 +96,7 @@ Se incorporaron:
 
 La separación entre el Marketplace y el perfil permite mantener una estructura de navegación sencilla y evita mezclar información personal con las publicaciones.
 
- 6. Estructura y navegación
+## 6. Estructura y navegación
 
 La aplicación utiliza `ScreenManager` de Kivy para administrar las diferentes pantallas.
 
