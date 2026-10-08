@@ -1,89 +1,116 @@
-# Marketplace UCT
+# Fundamentación UX/UI — Marketplace UCT
 
-Aplicación de escritorio creada con Python 3.11, Kivy y KivyMD para mostrar un marketplace universitario. Permite ingresar un nombre, ver publicaciones de ejemplo y abrir el perfil.
+## 1. Descripción del proyecto
 
-## Requisitos previos
+**Marketplace UCT** es una aplicación orientada a la comunidad universitaria, cuyo objetivo es facilitar la compra, venta, intercambio y publicación de productos y servicios entre sus integrantes.
 
-- Git
-- Python 3.11
-- PowerShell en Windows
+La propuesta busca centralizar este tipo de actividades en una plataforma enfocada en estudiantes y miembros de la comunidad universitaria, permitiendo visualizar publicaciones, buscar productos y acceder al perfil de los usuarios.
 
-## Cómo ejecutar el proyecto
+La interfaz fue desarrollada utilizando **Python, Kivy y KivyMD**, separando la lógica de programación de la interfaz mediante archivos `.py` y `.kv`.
 
-Clona el repositorio y entra en la carpeta:
+## 2. Metodología UX/UI
 
-```powershell
-git clone https://github.com/vicentemauricio2002-sudo/UCTMarket.git
-cd UCTMarket
-```
+Para el diseño de la aplicación se consideraron principios básicos de UX/UI y los resultados obtenidos durante el proceso de investigación realizado por el equipo.
 
-Crea un entorno virtual:
+El proceso se organizó en las siguientes etapas:
 
-```powershell
-python -m venv venv
-```
+1. Identificación del problema.
+2. Identificación del usuario objetivo.
+3. Recopilación de información mediante investigación con usuarios.
+4. Identificación de necesidades y hallazgos.
+5. Definición de decisiones de diseño.
+6. Elaboración de la interfaz.
+7. Implementación del prototipo utilizando Kivy y KivyMD.
+8. Revisión de la navegación y experiencia de usuario.
 
-Activa el entorno virtual:
+El objetivo fue diseñar una interfaz sencilla y fácil de comprender, reduciendo la cantidad de pasos necesarios para acceder a las funciones principales de la aplicación.
 
-```powershell
-.\venv\Scripts\Activate.ps1
-```
+## 3. Usuario objetivo
 
-Si PowerShell bloquea la activación habilita scripts solo para la sesión actual con el siguiente comando, y vuelve a intentar el comando anterior:
+El usuario principal de Marketplace UCT corresponde a integrantes de la comunidad universitaria, principalmente estudiantes interesados en comprar, vender, intercambiar u ofrecer productos y servicios.
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-```
+Se consideraron características como:
 
-Instala las dependencias:
+- Uso frecuente de dispositivos móviles.
+- Necesidad de acceder rápidamente a publicaciones.
+- Interés por encontrar productos dentro de la comunidad universitaria.
+- Necesidad de identificar al usuario que realiza una publicación.
+- Preferencia por una navegación sencilla y directa.
 
-```powershell
-python -m pip install --upgrade pip
-```
+## 4. Hallazgos de la investigación
 
-```powershell
-python -m pip install -r requirements.txt
-```
+A partir de la investigación realizada por el equipo se identificaron necesidades relacionadas con la compra, venta e intercambio de productos y servicios dentro de la comunidad universitaria.
 
-Ejecuta la aplicación desde la carpeta del proyecto:
+Los principales hallazgos utilizados para orientar el diseño fueron:
 
-```powershell
-python main.py
-```
+| Hallazgo | Necesidad identificada | Decisión de diseño |
+|---|---|---|
+1. Cuando se le pregunto a los usuarios si estarían dispuestos a pagar por la app ninguno estuvo de acuerdo lo que significa que debe ser gratuita.
+2. La mayoría de los usuarios ya tienen experiencia en usar apps de este tipo por lo  tanto no es necesario dar una explicación extensa de como funciona la app.
+3. La mayoría esta de acuerdo en que se acepten todos los medios de pago existentes.
+4. Los usuarios confirmaron que utilizarían esta app de manera regular, debemos encontrar una manera de hacer la app más llamativa para su uso.
 
-## Dependencias
+## 5. Decisiones de diseño
 
-Las dependencias están listadas en `requirements.txt`. Si modificas el entorno y quieres actualizar ese archivo, activa primero el entorno virtual y ejecuta:
+La primera pantalla corresponde al acceso a la aplicación.
 
-```powershell
-python -m pip freeze | Out-File -Encoding ascii requirements.txt
-```
+Se incorporaron:
 
-La opción `-Encoding ascii` evita que PowerShell escriba el archivo en UTF-16, formato que puede causar problemas al instalar las dependencias.
+- Nombre de la aplicación.
+- Descripción breve.
+- Campo para ingresar el nombre del usuario.
+- Botón de ingreso.
 
-## Funcionalidades actuales
+El objetivo es presentar de manera inmediata la función principal de la pantalla y evitar elementos innecesarios.
 
-- Ingreso usando un nombre.
-- Pantalla principal con publicaciones de ejemplo.
-- Vista de perfil con el nombre ingresado.
+La distribución vertical permite que los elementos sean identificables fácilmente y mantiene una jerarquía visual clara.
 
-El inicio de sesión no valida cuentas ni contraseñas. Las publicaciones son datos de ejemplo; la aplicación todavía no usa un servidor ni una base de datos.
+La pantalla principal representa el centro de la aplicación.
 
-## Estructura del proyecto
+Se incorporaron los siguientes elementos:
+
+- Barra superior con el nombre de Marketplace UCT.
+- Campo de búsqueda.
+- Sección de publicaciones recientes.
+- Tarjetas para representar productos.
+- Acceso al perfil del usuario.
+
+Las publicaciones se presentan mediante tarjetas independientes para separar visualmente cada producto y facilitar su lectura.
+
+Cada tarjeta muestra información básica como:
+
+- Nombre del producto.
+- Precio.
+- Información del vendedor.
+
+Esta estructura permite que el usuario pueda revisar rápidamente diferentes publicaciones sin tener que entrar individualmente a cada una.
+
+La pantalla de perfil permite representar la información básica del usuario.
+
+Se incorporaron:
+
+- Identificación del usuario.
+- Nombre.
+- Sección de publicaciones.
+- Botón para regresar al Marketplace.
+
+La separación entre el Marketplace y el perfil permite mantener una estructura de navegación sencilla y evita mezclar información personal con las publicaciones.
+
+## 6. Estructura y navegación
+
+La aplicación utiliza `ScreenManager` de Kivy para administrar las diferentes pantallas.
+
+La estructura propuesta es:
 
 ```text
-UCTMarket/
-├── main.py
-├── marketplace.kv
-├── requirements.txt
-├── README.md
-├── FUNDAMENTACION-UX- UI.md
-├── .gitignore
-└── uso_ia.md
+LoginScreen
+     │
+     ▼
+PrincipalScreen
+     │
+     ▼
+PerfilScreen
+     │
+     └──────────► PrincipalScreen
+
 ```
-
-`main.py` contiene la lógica de la aplicación y `marketplace.kv` define la interfaz. Mantén ambos archivos en la misma carpeta y conserva el nombre `marketplace.kv`.
-
-## Nota sobre Git
-
-El entorno virtual `venv/` es local y no debería subirse al repositorio. Comprueba que esté excluido mediante `.gitignore`.
