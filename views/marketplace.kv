@@ -1,0 +1,449 @@
+#:import dp kivy.metrics.dp
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+MDBoxLayout:
+    id: root_layout
+    orientation: "vertical"
+
+    MDTopAppBar:
+        type: "small"
+        theme_bg_color: "Custom"
+        md_bg_color: app.PALETA["azul_brillante"]
+        padding: dp(12)
+
+        MDTopAppBarTitle:
+            text: "UCTMarket"
+            theme_text_color: "Custom"
+            text_color: app.PALETA["blanco"]
+
+        MDTopAppBarTrailingButtonContainer:
+            MDActionTopAppBarButton:
+                icon: "home-outline"
+                theme_icon_color: "Custom"
+                icon_color: app.PALETA["blanco"]
+                on_release: app.ir_a_pantalla("principal")
+
+            MDActionTopAppBarButton:
+                icon: "store-outline"
+                theme_icon_color: "Custom"
+                icon_color: app.PALETA["blanco"]
+                on_release: app.ir_a_pantalla("market")
+
+            MDActionTopAppBarButton:
+                icon: "account-outline"
+                theme_icon_color: "Custom"
+                icon_color: app.PALETA["blanco"]
+                on_release: app.ir_a_pantalla("perfil")
+            
+            Widget:
+                size_hint_x: None
+                width: "20dp"
+
+            MDButton:
+                style: "filled"
+                theme_bg_color: "Custom"
+                md_bg_color: app.PALETA["blanco"]
+                pos_hint: {"center_x": 0.5}
+                on_release: app.screen_manager.current = "login"
+
+                MDButtonText:
+                    text: "Cerrar sesión"
+                    theme_text_color: "Custom"
+                    text_color: app.PALETA["primario"]
+
+    ScreenManager:
+        id: screen_manager
+        transition: FadeTransition(duration=0.18)
+
+        LoginScreen:
+            name: "login"
+
+        PrincipalScreen:
+            name: "principal"
+        
+        MarketScreen:
+            name: "market"
+
+        PerfilScreen:
+            name: "perfil"
+
+<LoginScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        canvas.before:
+            Color:
+                rgba: app.PALETA["fondo"]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "center"
+
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                bar_width: dp(4)
+                size_hint: None, None
+                width: min(root.width - dp(40), dp(360))
+                height: min(root.height - dp(40), dp(360))
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: [dp(8), dp(16), dp(8), dp(16)]
+                    spacing: dp(12)
+
+                    MDLabel:
+                        text: "Iniciar sesión"
+                        font_style: "Headline"
+                        role: "medium"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+                        size_hint_y: None
+                        height: dp(48)
+
+                    MDTextField:
+                        id: nombre
+                        mode: "outlined"
+                        multiline: False
+                        size_hint_y: None
+                        height: dp(56)
+                        on_focus: root.limpiar_mensaje() if self.focus else None
+                        MDTextFieldHintText:
+                            text: "Nombre de usuario"
+
+                    MDTextField:
+                        id: contrasena
+                        mode: "outlined"
+                        password: True
+                        size_hint_y: None
+                        height: dp(56)
+                        on_focus: root.limpiar_mensaje() if self.focus else None
+                        MDTextFieldHintText:
+                            text: "Contraseña"
+
+                    MDLabel:
+                        id: mensaje
+                        text: ""
+                        font_style: "Body"
+                        role: "small"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_intenso"]
+                        size_hint_y: None
+                        height: self.texture_size[1] if self.text else 0
+                        text_size: self.width, None
+
+                    MDButton:
+                        style: "filled"
+                        theme_bg_color: "Custom"
+                        md_bg_color: app.PALETA["primario"]
+                        pos_hint: {"center_x": 0.5}
+                        on_release: root.ingresar()
+
+                        MDButtonText:
+                            text: "Ingresar"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["blanco"]
+
+
+<PrincipalScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        canvas.before:
+            Color:
+                rgba: app.PALETA["fondo"]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(5)
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [dp(60), dp(60), dp(60), dp(40)]
+                spacing: dp(32)
+
+               
+                MDBoxLayout:
+                    orientation: "vertical"
+                    adaptive_height: True
+                    spacing: dp(4)
+
+                    MDLabel:
+                        id: usuario_label
+                        text: "Bienvenido a UCTMarket"
+                        font_style: "Headline"
+                        role: "medium"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+                        adaptive_height: True
+
+                    MDLabel:
+                        text: "Organiza tus actividades universitarias"
+                        font_style: "Body"
+                        role: "medium"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+                        adaptive_height: True
+
+             
+                MDCard:
+                    style: "elevated"
+                    orientation: "vertical"
+                    theme_bg_color: "Custom"
+                    md_bg_color: app.PALETA["blanco"]
+                    padding: [dp(18), dp(18), dp(18), dp(18)]
+                    spacing: dp(12)
+                    size_hint_y: None
+                    height: self.minimum_height
+                    radius: [dp(18)]
+                    elevation: 1
+
+                    MDLabel:
+                        text: "Nueva tarea"
+                        font_style: "Title"
+                        role: "large"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+                        adaptive_height: True
+
+                    MDLabel:
+                        text: "¿Qué necesitas recordar?"
+                        font_style: "Body"
+                        role: "medium"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["texto_secundario"]
+                        adaptive_height: True
+
+                    MDTextField:
+                        id: tarea_input
+                        mode: "outlined"
+                        multiline: False
+                        size_hint_y: None
+                        height: dp(56)
+                        MDTextFieldHintText:
+                            text: "Escribe tu tarea..."
+
+                    MDButton:
+                        style: "filled"
+                        theme_bg_color: "Custom"
+                        md_bg_color: app.PALETA["primario"]
+                        pos_hint: {"center_x": 0.5}
+                        on_release: root.agregar_tarea()
+
+                        MDButtonText:
+                            text: "Guardar tarea"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["blanco"]
+
+      
+                MDBoxLayout:
+                    orientation: "vertical"
+                    adaptive_height: True
+                    spacing: dp(10)
+
+                    MDCard:
+                        style: "elevated"
+                        orientation: "vertical"
+                        theme_bg_color: "Custom"
+                        md_bg_color: app.PALETA["blanco"]
+                        padding: dp(18)
+                        spacing: dp(8)
+                        size_hint_y: None
+                        height: max(dp(80), self.minimum_height)
+                        radius: [dp(18)]
+                        elevation: 1
+
+                        MDLabel:
+                            text: "Mis Tareas"
+                            font_style: "Title"
+                            role: "large"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["azul_noche"]
+                            adaptive_height: True
+
+                        MDLabel:
+                            id: tareas_label
+                            text: "No hay tareas guardadas."
+                            font_style: "Body"
+                            role: "medium"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["texto"]
+                            size_hint_y: None
+                            height: self.texture_size[1] + dp(8)
+                            text_size: self.width, None
+                            valign: "top"
+
+
+<MarketScreen>:
+    MDBoxLayout:
+        orientation: "vertical"
+
+        canvas.before:
+            Color:
+                rgba: app.PALETA["fondo"]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(5)
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [dp(60), dp(60), dp(60), dp(40)]
+                spacing: dp(32)
+
+                MDTextField:
+                    id: busqueda
+                    mode: "outlined"
+                    pos_hint: {"center_x": 0.5}
+                    theme_text_color: "Custom"
+                    text_color_normal: app.PALETA["texto_secundario"]
+                    height: dp(56)
+                    MDTextFieldHintText:
+                        text: "Buscar productos..."
+
+                    MDTextFieldLeadingIcon:
+                        icon: "magnify"
+
+                MDLabel:
+                    text: "Publicaciones recientes"
+                    font_style: "Title"
+                    theme_text_color: "Custom"
+                    text_color: app.PALETA["azul_noche"]
+                    size_hint_y: None
+                    height: dp(50)
+
+                MDCard:
+                    style: "elevated"
+                    orientation: "vertical"
+                    padding: dp(15)
+                    spacing: dp(5)
+                    size_hint_y: None
+                    height: dp(150)
+                    theme_bg_color: "Custom"
+                    md_bg_color: app.PALETA["blanco"]
+
+                    MDLabel:
+                        text: "iPhone 12"
+                        font_style: "Title"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+
+                    MDLabel:
+                        text: "$250.000"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["primario"]
+
+                    MDLabel:
+                        text: "Publicado por estudiante UCT"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["texto_secundario"]
+
+                MDCard:
+                    style: "elevated"
+                    orientation: "vertical"
+                    padding: dp(15)
+                    spacing: dp(5)
+                    size_hint_y: None
+                    height: dp(150)
+                    theme_bg_color: "Custom"
+                    md_bg_color: app.PALETA["blanco"]
+
+                    MDLabel:
+                        text: "Libros de cálculo"
+                        font_style: "Title"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+
+                    MDLabel:
+                        text: "$15.000"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["primario"]
+
+                    MDLabel:
+                        text: "Publicado por estudiante UCT"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["texto_secundario"]
+
+
+<PerfilScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        canvas.before:
+            Color:
+                rgba: app.PALETA["fondo"]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(5)
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [dp(60), dp(60), dp(60), dp(40)]
+                spacing: dp(32)
+
+                MDCard:
+                    style: "elevated"
+                    orientation: "vertical"
+                    padding: dp(24)
+                    spacing: dp(16)
+                    size_hint_y: None
+                    height: dp(220)
+                    radius: [dp(20)]
+                    elevation: 1
+                    theme_bg_color: "Custom"
+                    md_bg_color: app.PALETA["blanco"]
+
+                    AnchorLayout:
+                        anchor_x: "center"
+                        size_hint_y: None
+                        height: dp(100)
+
+                        MDIcon:
+                            icon: "account-circle"
+                            font_size: "80sp"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["primario"]
+
+                    MDLabel:
+                        text: "Perfil de usuario"
+                        font_style: "Headline"
+                        role: "small"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+                        adaptive_height: True
+
+                    MDLabel:
+                        text: "Comunidad universitaria UCT"
+                        font_style: "Body"
+                        role: "medium"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["texto_secundario"]
+                        adaptive_height: True
