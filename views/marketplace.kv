@@ -6,6 +6,7 @@ MDBoxLayout:
     orientation: "vertical"
 
     MDTopAppBar:
+        id: topbar
         type: "small"
         theme_bg_color: "Custom"
         md_bg_color: app.PALETA["azul_brillante"]
@@ -17,6 +18,7 @@ MDBoxLayout:
             text_color: app.PALETA["blanco"]
 
         MDTopAppBarTrailingButtonContainer:
+            id: botones_topbar
             MDActionTopAppBarButton:
                 icon: "home-outline"
                 theme_icon_color: "Custom"
@@ -44,7 +46,7 @@ MDBoxLayout:
                 theme_bg_color: "Custom"
                 md_bg_color: app.PALETA["blanco"]
                 pos_hint: {"center_x": 0.5}
-                on_release: app.screen_manager.current = "login"
+                on_release: app.ir_a_pantalla("login")
 
                 MDButtonText:
                     text: "Cerrar sesión"
@@ -63,6 +65,9 @@ MDBoxLayout:
         
         MarketScreen:
             name: "market"
+        
+        ProductoScreen:
+            name: "producto"
 
         PerfilScreen:
             name: "perfil"
@@ -208,7 +213,7 @@ MDBoxLayout:
                     spacing: dp(12)
                     size_hint_y: None
                     height: self.minimum_height
-                    radius: [dp(18)]
+                    radius: [dp(20)]
                     elevation: 1
 
                     MDLabel:
@@ -263,7 +268,7 @@ MDBoxLayout:
                         spacing: dp(8)
                         size_hint_y: None
                         height: max(dp(80), self.minimum_height)
-                        radius: [dp(18)]
+                        radius: [dp(20)]
                         elevation: 1
 
                         MDLabel:
@@ -331,57 +336,105 @@ MDBoxLayout:
                     size_hint_y: None
                     height: dp(50)
 
+                MDBoxLayout:
+                    id: lista_productos
+                    orientation: "vertical"
+                    adaptive_height: True
+                    spacing: dp(16)
+
+
+<ProductoScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        canvas.before:
+            Color:
+                rgba: app.PALETA["fondo"]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(5)
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [dp(60), dp(60), dp(60), dp(40)]
+                spacing: dp(32)
+
+                MDButton:
+                    style: "text"
+                    on_release: app.root.ids.screen_manager.current = "market"
+
+                    MDButtonIcon:
+                        icon: "arrow-left"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["primario"]
+
+                    MDButtonText:
+                        text: "Volver"
+
                 MDCard:
                     style: "elevated"
                     orientation: "vertical"
-                    padding: dp(15)
-                    spacing: dp(5)
+                    padding: dp(24)
+                    spacing: dp(16)
                     size_hint_y: None
-                    height: dp(150)
+                    height: self.minimum_height
+                    radius: [dp(20)]
+                    elevation: 1
                     theme_bg_color: "Custom"
                     md_bg_color: app.PALETA["blanco"]
 
                     MDLabel:
-                        text: "iPhone 12"
-                        font_style: "Title"
-                        theme_text_color: "Custom"
-                        text_color: app.PALETA["azul_noche"]
+                        id: nombre_producto
+                        text: "Nombre del producto"
+                        font_style: "Headline"
+                        role: "large"
+                        adaptive_height: True
 
                     MDLabel:
-                        text: "$250.000"
-                        theme_text_color: "Custom"
-                        text_color: app.PALETA["primario"]
-
-                    MDLabel:
-                        text: "Publicado por estudiante UCT"
+                        text: "Precio:"
+                        font_style: "Body"
+                        role: "medium"
                         theme_text_color: "Custom"
                         text_color: app.PALETA["texto_secundario"]
-
-                MDCard:
-                    style: "elevated"
-                    orientation: "vertical"
-                    padding: dp(15)
-                    spacing: dp(5)
-                    size_hint_y: None
-                    height: dp(150)
-                    theme_bg_color: "Custom"
-                    md_bg_color: app.PALETA["blanco"]
+                        adaptive_height: True
 
                     MDLabel:
-                        text: "Libros de cálculo"
+                        id: precio_producto
+                        text: "Precio"
                         font_style: "Title"
-                        theme_text_color: "Custom"
-                        text_color: app.PALETA["azul_noche"]
+                        role: "large"
+                        adaptive_height: True
 
                     MDLabel:
-                        text: "$15.000"
-                        theme_text_color: "Custom"
-                        text_color: app.PALETA["primario"]
-
-                    MDLabel:
-                        text: "Publicado por estudiante UCT"
+                        text: "Descripción:"
+                        font_style: "Body"
+                        role: "medium"
                         theme_text_color: "Custom"
                         text_color: app.PALETA["texto_secundario"]
+                        adaptive_height: True
+                    MDLabel:
+                        id: descripcion_producto
+                        text: "Descripción"
+                        adaptive_height: True
+
+                    MDLabel:
+                        text: "Vendedor:"
+                        font_style: "Body"
+                        role: "medium"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["texto_secundario"]
+                        adaptive_height: True
+                    MDLabel:
+                        id: vendedor_producto
+                        text: "Vendedor"
+                        adaptive_height: True
 
 
 <PerfilScreen>:
@@ -411,13 +464,25 @@ MDBoxLayout:
                     style: "elevated"
                     orientation: "vertical"
                     padding: dp(24)
-                    spacing: dp(16)
+                    spacing: dp(8)
                     size_hint_y: None
-                    height: dp(220)
+                    height: self.minimum_height
                     radius: [dp(20)]
                     elevation: 1
                     theme_bg_color: "Custom"
                     md_bg_color: app.PALETA["blanco"]
+
+                    MDFloatLayout:
+                        MDButton:
+                            style: "text"
+                            pos_hint: {"center_x": 1, "center_y": 0.5}
+                            #on_release: root.abrir_configuracion()
+
+                            MDButtonIcon:
+                                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                icon: "cog-outline"
+                                theme_icon_color: "Custom"
+                                icon_color: app.PALETA["primario"]
 
                     AnchorLayout:
                         anchor_x: "center"
@@ -431,7 +496,8 @@ MDBoxLayout:
                             text_color: app.PALETA["primario"]
 
                     MDLabel:
-                        text: "Perfil de usuario"
+                        id: usuario_nombre_label
+                        text: "Usuario"
                         font_style: "Headline"
                         role: "small"
                         halign: "center"
@@ -440,10 +506,54 @@ MDBoxLayout:
                         adaptive_height: True
 
                     MDLabel:
-                        text: "Comunidad universitaria UCT"
+                        text: "Tu Perfil"
                         font_style: "Body"
                         role: "medium"
                         halign: "center"
                         theme_text_color: "Custom"
                         text_color: app.PALETA["texto_secundario"]
                         adaptive_height: True
+            
+                MDCard:
+                    style: "elevated"
+                    orientation: "vertical"
+                    padding: dp(24)
+                    spacing: dp(8)
+                    size_hint_y: None
+                    height: max(dp(80), self.minimum_height)
+                    radius: [dp(20)]
+                    elevation: 1
+                    theme_bg_color: "Custom"
+                    md_bg_color: app.PALETA["blanco"]
+
+                    MDFloatLayout:
+                        MDButton:
+                            style: "text"
+                            pos_hint: {"center_x": 1, "center_y": 0.5}
+                            #on_release: root.crear_publicacion()
+
+                            MDButtonIcon:
+                                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                icon: "plus"
+                                theme_icon_color: "Custom"
+                                icon_color: app.PALETA["primario"]
+
+                    MDLabel:
+                        text: "Mis Publicaciones"
+                        font_style: "Title"
+                        role: "large"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+                        adaptive_height: True
+
+                    MDLabel:
+                        id: publicaciones_label
+                        text: "No hay publicaciones guardadas."
+                        font_style: "Body"
+                        role: "medium"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["texto"]
+                        size_hint_y: None
+                        height: self.texture_size[1] + dp(8)
+                        text_size: self.width, None
+                        valign: "top"
