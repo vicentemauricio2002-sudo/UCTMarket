@@ -1,31 +1,33 @@
-import urllib.request
-import json
+"""Remote Config con valores predeterminados y tolerancia a fallos de red.
 
-DEFAULT_WELCOME_MESSAGE = 'Bienvenido a UCTMarket'
+Configura UCTMARKET_REMOTE_CONFIG_URL como variable de entorno para usar un
+endpoint JSON. Ejemplo de respuesta: {"welcome_message": "Bienvenido"}.
+"""
+import os
+import requests
 
-def get_remote_value():
-    """
-    Intenta obtener el mensaje de bienvenida desde el servidor Flask remoto.
-    Si el servidor no está encendido o falla la red, la función falla
-    y 'get_welcome_message' usará el DEFAULT_WELCOME_MESSAGE de respaldo.
-    """
-    url = "http://127.0.0.1:5000/config_remota"
-    
-    # Hacemos una petición HTTP simple con la librería estándar de Python
-    req = urllib.request.Request(url)
-    with urllib.request.urlopen(req, timeout=2) as response:
-        if response.status == 200:
-            data = json.loads(response.read().decode('utf-8'))
-            return data.get('mensaje_bienvenida')
-            
-    return None
+DEFAULT_CONFIG = {"welcome_message": "Bienvenido a UCTMarket", "primary_color": "#3B82F6"}
+TIMEOUT_SECONDS = 3
+
+def get_remote_config():
+    url = os.environ.get("UCTMARKET_REMOTE_CONFIG_URL", "").strip()
+    if not url:
+        return DEFAULT_CONFIG.copy()
+    try:
+        response = requests.get(url, timeout=TIMEOUT_SECONDS)
+        response.raise_for_status()
+        data = response.json()
+        if not isinstance(data, dict):
+            return DEFAULT_CONFIG.copy()
+        config = DEFAULT_CONFIG.copy()
+        if isinstance(data.get("welcome_message"), str) and data["welcome_message"].strip():
+            config["welcome_message"] = data["welcome_message"].strip()
+        if isinstance(data.get("primary_color"), str) and len(data["primary_color"]) == 7 and data["primary_color"].startswith("#"):
+            config["primary_color"] = data["primary_color"]
+        return config
+    except (requests.RequestException, ValueError, TypeError) as exc:
+        print(f"Remote Config: se usan valores predeterminados ({exc})")
+        return DEFAULT_CONFIG.copy()
 
 def get_welcome_message():
-    try:
-        value = get_remote_value()
-        if value:
-            return str(value)
-    except Exception:
-        # Si el servidor remoto falla o no responde, entra aquí
-        pass
-    return DEFAULT_WELCOME_MESSAGE
+    return get_remote_config().get("welcome_message", DEFAULT_CONFIG["welcome_message"])
