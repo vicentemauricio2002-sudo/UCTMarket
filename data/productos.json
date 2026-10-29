@@ -1,0 +1,26 @@
+{
+    "productos": [
+        {
+            "id": 1,
+            "nombre": "iPhone 12",
+            "precio": 250000,
+            "descripcion": "Buen estado",
+            "imagen": "imagenes/iphone12.jpg",
+            "vendedor": "Juan Momo"
+        },
+        {
+            "id": 2,
+            "nombre": "Libro de cálculo",
+            "precio": 15000,
+            "descripcion": "Libro usado en buen estado",
+            "imagen": "imagenes/libro_calculo.png",
+            "vendedor": "María Juana"
+        },
+        {
+            "nombre": "test",
+            "precio": 0,
+            "descripcion": "test",
+            "vendedor": "admin"
+        }
+    ]
+}

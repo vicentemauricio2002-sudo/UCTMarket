@@ -60,6 +60,9 @@ MDBoxLayout:
         LoginScreen:
             name: "login"
 
+        RegistroScreen:
+            name: "registro"
+
         PrincipalScreen:
             name: "principal"
         
@@ -83,17 +86,15 @@ MDBoxLayout:
                 pos: self.pos
                 size: self.size
 
-        AnchorLayout:
-            anchor_x: "center"
-            anchor_y: "center"
-
-            ScrollView:
-                do_scroll_x: False
-                do_scroll_y: True
-                bar_width: dp(4)
-                size_hint: None, None
-                width: min(root.width - dp(40), dp(360))
-                height: min(root.height - dp(40), dp(360))
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(4)
+        
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                padding: dp(180), 0, dp(180), 0
 
                 MDBoxLayout:
                     orientation: "vertical"
@@ -155,6 +156,118 @@ MDBoxLayout:
                             text: "Ingresar"
                             theme_text_color: "Custom"
                             text_color: app.PALETA["blanco"]
+
+                    MDButton:
+                        style: "text"
+                        pos_hint: {"center_x": 0.5}
+                        on_release: app.root.ids.screen_manager.current = "registro"
+                        MDButtonIcon:
+                            icon: "arrow-left"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["primario"]
+
+                        MDButtonText:
+                            text: "Crear cuenta"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["azul_noche"]
+
+
+<RegistroScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        canvas.before:
+            Color:
+                rgba: app.PALETA["fondo"]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_width: dp(4)
+        
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                padding: dp(180), 0, dp(180), 0
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: [dp(8), dp(16), dp(8), dp(16)]
+                    spacing: dp(12)
+
+                    MDLabel:
+                        text: "Crea tu cuenta"
+                        font_style: "Headline"
+                        role: "medium"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_noche"]
+                        size_hint_y: None
+                        height: dp(48)
+
+                    MDTextField:
+                        id: nombre
+                        mode: "outlined"
+                        multiline: False
+                        size_hint_y: None
+                        height: dp(56)
+                        on_focus: root.limpiar_mensaje() if self.focus else None
+                        MDTextFieldHintText:
+                            text: "Nombre de usuario"
+
+                    MDTextField:
+                        id: contrasena
+                        mode: "outlined"
+                        password: True
+                        size_hint_y: None
+                        height: dp(56)
+                        on_focus: root.limpiar_mensaje() if self.focus else None
+                        MDTextFieldHintText:
+                            text: "Contraseña"
+
+                    MDLabel:
+                        id: mensaje
+                        text: ""
+                        font_style: "Body"
+                        role: "small"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: app.PALETA["azul_intenso"]
+                        size_hint_y: None
+                        height: self.texture_size[1] if self.text else 0
+                        text_size: self.width, None
+
+                    MDButton:
+                        style: "filled"
+                        theme_bg_color: "Custom"
+                        md_bg_color: app.PALETA["primario"]
+                        pos_hint: {"center_x": 0.5}
+                        on_release: root.registrarse()
+
+                        MDButtonText:
+                            text: "Registrar"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["blanco"]
+
+                    MDButton:
+                        style: "text"
+                        pos_hint: {"center_x": 0.5}
+                        on_release: app.root.ids.screen_manager.current = "login"
+                        MDButtonIcon:
+                            icon: "arrow-left"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["primario"]
+
+                        MDButtonText:
+                            text: "Iniciar sesión"
+                            theme_text_color: "Custom"
+                            text_color: app.PALETA["azul_noche"]
+
 
 
 <PrincipalScreen>:
@@ -319,11 +432,11 @@ MDBoxLayout:
                     id: busqueda
                     mode: "outlined"
                     pos_hint: {"center_x": 0.5}
-                    theme_text_color: "Custom"
-                    text_color_normal: app.PALETA["texto_secundario"]
                     height: dp(56)
                     MDTextFieldHintText:
                         text: "Buscar productos..."
+                        theme_text_color: "Custom"
+                        text_color_normal: app.PALETA["texto_secundario"]
 
                     MDTextFieldLeadingIcon:
                         icon: "magnify"
@@ -530,7 +643,7 @@ MDBoxLayout:
                         MDButton:
                             style: "text"
                             pos_hint: {"center_x": 1, "center_y": 0.5}
-                            #on_release: root.crear_publicacion()
+                            on_release: root.crear_publicacion()
 
                             MDButtonIcon:
                                 pos_hint: {"center_x": 0.5, "center_y": 0.5}

@@ -1,3 +1,9 @@
 {
-    "usuarios": []
+    "usuarios": [
+        {
+            "nombre": "admin",
+            "contrasena": "123",
+            "tareas": []
+        }
+    ]
 }

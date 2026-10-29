@@ -9,7 +9,7 @@ from kivy.properties import DictProperty, StringProperty, ObjectProperty
 from kivy.uix.screenmanager import Screen
 from kivymd.app import MDApp
 
-from models.json_service import get_or_create_user, save_user
+from models.json_service import get_user, create_user, save_user, cargar_productos, guardar_producto
 from models.notification_service import show_notification
 from models.remote_config import get_welcome_message
 
@@ -17,9 +17,12 @@ from kivy.core.window import Window
 from kivy.utils import get_color_from_hex
 
 from kivy.metrics import dp
-from kivymd.app import MDApp
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
+from kivymd.uix.textfield import MDTextField, MDTextFieldHintText
+from kivymd.uix.button import MDButton
+from kivymd.uix.button import MDButtonText
+from kivy.uix.modalview import ModalView
 
 Window.clearcolor = get_color_from_hex("#F8FAFC")
 
@@ -49,30 +52,28 @@ PALETA = {
     "borde": hex_a_rgba("#CBD5E1"),
 }
 
-PRODUCTOS = {
-    "iphone": {
-        "nombre": "iPhone 12",
-        "precio": "$250.000",
-        "descripcion": "iPhone 12 en buen estado.",
-        "vendedor": "Estudiante de informática",
-    },
-    "libro": {
-        "nombre": "Libro de cálculo",
-        "precio": "$15.000",
-        "descripcion": "Libro de cálculo para estudiantes universitarios.",
-        "vendedor": "Estudiante de ingeniería",
-    },
-}
+def formatear_precio(precio):
+    return f"${int(precio):,}".replace(",", ".")
 
 
 class LoginScreen(Screen):
     def ingresar(self):
         nombre = self.ids.nombre.text.strip()
+        contrasena = self.ids.contrasena.text
         if not nombre:
             self.ids.mensaje.text = "Ingresa tu nombre para continuar."
             return
 
-        usuario = get_or_create_user(nombre)
+        if not contrasena:
+            self.ids.mensaje.text = "Ingresa tu contraseña para continuar."
+            return
+
+        usuario = get_user(nombre, contrasena)
+
+        if usuario is None:
+            self.ids.mensaje.text = "Nombre o contraseña incorrectos."
+            return
+
         principal = self.manager.get_screen("principal")
         principal.usuario = usuario
         principal.actualizar_interfaz()
@@ -89,6 +90,34 @@ class LoginScreen(Screen):
     def limpiar_mensaje(self):
         self.ids.mensaje.text = ""
 
+
+class RegistroScreen(Screen):
+    def registrarse(self):
+        nombre = self.ids.nombre.text.strip()
+        contrasena = self.ids.contrasena.text
+        if not nombre:
+            self.ids.mensaje.text = "Ingresa tu nombre para continuar."
+            return
+
+        if not contrasena:
+            self.ids.mensaje.text = "Ingresa tu contraseña para continuar."
+            return
+
+        usuario = create_user(nombre, contrasena)
+
+        if usuario is None:
+            self.ids.mensaje.text = (
+                "Ese nombre ya existe o los datos no son válidos."
+            )
+            return
+
+        show_notification(
+            "UCTMarket", "Registro realizado correctamente."
+        )
+        self.manager.current = "login"
+
+    def limpiar_mensaje(self):
+        self.ids.mensaje.text = ""
 
 class PrincipalScreen(Screen):
     usuario = DictProperty({})
@@ -128,7 +157,9 @@ class MarketScreen(Screen):
         contenedor = self.ids.lista_productos
         contenedor.clear_widgets()
 
-        for producto_id, producto in PRODUCTOS.items():
+        productos = cargar_productos()
+
+        for producto_id, producto in enumerate(productos, start=1):
             tarjeta = MDCard(
                 style="elevated",
                 orientation="vertical",
@@ -151,7 +182,7 @@ class MarketScreen(Screen):
 
             tarjeta.add_widget(
                 MDLabel(
-                    text=producto["precio"],
+                    text=formatear_precio(producto["precio"]),
                     theme_text_color="Custom",
                     text_color=MDApp.get_running_app().PALETA["primario"],
                 )
@@ -179,12 +210,22 @@ class MarketScreen(Screen):
 class ProductoScreen(Screen):
 
     def mostrar_producto(self, producto_id):
-        producto = PRODUCTOS[producto_id]
+        productos = cargar_productos()
 
-        self.ids.nombre_producto.text = producto["nombre"]
-        self.ids.precio_producto.text = producto["precio"]
-        self.ids.descripcion_producto.text = producto["descripcion"]
-        self.ids.vendedor_producto.text = producto["vendedor"]
+        indice = producto_id - 1
+
+        if indice < 0 or indice >= len(productos):
+            print("No se encontró el producto:", producto_id)
+            return
+
+        producto = productos[indice]
+
+        self.ids.nombre_producto.text = str(producto["nombre"])
+        self.ids.precio_producto.text = formatear_precio(producto["precio"])
+        self.ids.descripcion_producto.text = str(
+            producto.get("descripcion", "Sin descripción")
+        )
+        self.ids.vendedor_producto.text = str(producto["vendedor"])
 
 
 class PerfilScreen(Screen):
@@ -193,6 +234,231 @@ class PerfilScreen(Screen):
     def actualizar_interfaz(self):
         nombre = self.usuario.get("nombre", "")
         self.ids.usuario_nombre_label.text = nombre or "Usuario"
+        self.actualizar_publicaciones()
+
+    def actualizar_publicaciones(self):
+        nombre_usuario = self.usuario.get("nombre", "").strip()
+
+        if not nombre_usuario:
+            self.ids.publicaciones_label.text = (
+                "Inicia sesión para ver tus publicaciones."
+            )
+            return
+
+        productos = cargar_productos()
+
+        mis_productos = [
+            producto
+            for producto in productos
+            if producto.get("vendedor", "").casefold()
+            == nombre_usuario.casefold()
+        ]
+
+        if not mis_productos:
+            self.ids.publicaciones_label.text = (
+                "No tienes publicaciones todavía."
+            )
+            return
+
+        lineas = []
+
+        for producto in mis_productos:
+            nombre = producto.get("nombre", "Sin nombre")
+            precio = formatear_precio(producto.get("precio", 0))
+            descripcion = producto.get(
+                "descripcion", "Sin descripción"
+            )
+
+            lineas.append(
+                f"{nombre} - {precio}\n{descripcion}"
+            )
+
+        self.ids.publicaciones_label.text = "\n\n".join(lineas)
+
+    def crear_publicacion(self):
+        if not self.usuario.get("nombre"):
+            show_notification(
+                "UCTMarket",
+                "Debes iniciar sesión para publicar productos."
+            )
+            return
+
+        contenido = MDCard(
+            orientation="vertical",
+            padding=[dp(20), dp(0), dp(20), dp(20)],
+            spacing=dp(10),
+            theme_bg_color="Custom",
+            md_bg_color=MDApp.get_running_app().PALETA["blanco"],
+            radius=[dp(16), dp(16), dp(16), dp(16)],
+            elevation=0,
+        )
+
+        titulo = MDLabel(
+            text="Crear publicación",
+            font_style="Headline",
+            role="small",
+            theme_text_color="Custom",
+            text_color=MDApp.get_running_app().PALETA["azul_noche"],
+            size_hint_y=None,
+            height=dp(48),
+            halign="left",
+            valign="middle",
+        )
+
+        nombre_input = MDTextField(
+            multiline=False,
+            size_hint_y=None,
+            height=dp(45),
+
+        )
+
+        nombre_input.add_widget(
+            MDTextFieldHintText(
+                text="Nombre del producto",
+            )
+        )
+
+        precio_input = MDTextField(
+            multiline=False,
+            input_filter="int",
+            size_hint_y=None,
+            height=dp(45),
+
+        )
+
+        precio_input.add_widget(
+            MDTextFieldHintText(
+                text="Precio (ej.: 250000)",
+            )
+        )
+
+        descripcion_input = MDTextField(
+            multiline=True,
+            size_hint_y=None,
+            height=dp(45),
+
+        )
+
+        descripcion_input.add_widget(
+            MDTextFieldHintText(
+                text="Descripción del producto",
+            )
+        )
+        
+
+        guardar_boton = MDButton(
+            style="filled",
+            theme_bg_color="Custom",
+            md_bg_color=MDApp.get_running_app().PALETA["primario"],
+            size_hint_y=None,
+            height=dp(48),
+        )
+
+        guardar_boton.add_widget(
+            MDButtonText(
+                text="Guardar publicación",
+                theme_text_color="Custom",
+                text_color=MDApp.get_running_app().PALETA["blanco"],
+            )
+        )
+
+        cancelar_boton = MDButton(
+            style="text",
+            theme_bg_color="Custom",
+            md_bg_color=MDApp.get_running_app().PALETA["azul_suave"],
+            size_hint_y=None,
+            height=dp(42),
+        )
+
+        cancelar_boton.add_widget(
+            MDButtonText(
+                text="Cancelar",
+                theme_text_color="Custom",
+                text_color=MDApp.get_running_app().PALETA["primario"],
+            )
+        )
+
+
+        modal = ModalView(
+            size_hint=(0.85, 0.8),
+            auto_dismiss=False,
+            background_color=(0, 0, 0, 0),
+        )
+
+        guardar_boton.bind(
+            on_release=lambda *_: self.guardar_publicacion(
+                nombre_input.text,
+                precio_input.text,
+                descripcion_input.text,
+                modal,
+            )
+        )
+
+        cancelar_boton.bind(
+            on_release=lambda *_: modal.dismiss()
+        )
+
+        contenido.add_widget(titulo)
+        contenido.add_widget(nombre_input)
+        contenido.add_widget(precio_input)
+        contenido.add_widget(descripcion_input)
+        contenido.add_widget(guardar_boton)
+        contenido.add_widget(cancelar_boton)
+
+        modal.add_widget(contenido)
+        modal.open()
+
+    def guardar_publicacion(
+        self, nombre, precio, descripcion, modal
+    ):
+        nombre = nombre.strip()
+        descripcion = descripcion.strip()
+        precio = precio.strip()
+
+        if not nombre or not precio or not descripcion:
+            show_notification(
+                "UCTMarket",
+                "Completa todos los campos antes de guardar."
+            )
+            return
+
+        try:
+            precio_numero = int(precio)
+        except ValueError:
+            show_notification(
+                "UCTMarket",
+                "El precio debe ser un número entero."
+            )
+            return
+
+        producto = {
+            "nombre": nombre,
+            "precio": precio_numero,
+            "descripcion": descripcion,
+            "vendedor": self.usuario.get("nombre", ""),
+        }
+
+        guardado = guardar_producto(producto)
+
+        if not guardado:
+            show_notification(
+                "UCTMarket",
+                "No se pudo guardar la publicación."
+            )
+            return
+
+        modal.dismiss()
+        self.actualizar_publicaciones()
+
+        # Actualiza el catálogo si la pantalla está disponible.
+        if self.manager and self.manager.has_screen("market"):
+            self.manager.get_screen("market").generar_productos()
+
+        show_notification(
+            "UCTMarket",
+            "Tu publicación se guardó correctamente."
+        )
+
     
 
 
