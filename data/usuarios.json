@@ -4,6 +4,13 @@
             "nombre": "admin",
             "contrasena": "123",
             "tareas": []
+        },
+        {
+            "nombre": "cris",
+            "contrasena": "123",
+            "tareas": [
+                "tarea 1"
+            ]
         }
     ]
 }

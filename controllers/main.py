@@ -469,10 +469,10 @@ class MainApp(MDApp):
 
     def actualizar_botones_topbar(self, instancia, pantalla):
         botones = self.root.ids.botones_topbar
-        en_login = pantalla == "login"
+        en_login = pantalla in ["login", "registro"]
 
         botones.opacity = 0 if en_login else 1
-        botones.disabled = en_login
+        botones.disabled = True if en_login else False
 
 
     def ir_a_pantalla(self, nombre):
@@ -480,10 +480,10 @@ class MainApp(MDApp):
             self.screen_manager.current = nombre
 
             botones = self.root.ids.botones_topbar
-            en_login = nombre == "login"
+            en_login = nombre in ["login", "registro"]
 
             botones.opacity = 0 if en_login else 1
-            botones.disabled = en_login
+            botones.disabled = True if en_login else False
 
 
     def build(self):
@@ -491,10 +491,10 @@ class MainApp(MDApp):
         self.screen_manager = root.ids.screen_manager
 
         botones = root.ids.botones_topbar
-        en_login = self.screen_manager.current == "login"
+        en_login = self.screen_manager.current in ["login", "registro"]
 
         botones.opacity = 0 if en_login else 1
-        botones.disabled = en_login
+        botones.disabled = True if en_login else False
 
         self.screen_manager.bind(
             current=self.actualizar_botones_topbar

@@ -21,6 +21,12 @@
             "precio": 0,
             "descripcion": "test",
             "vendedor": "admin"
+        },
+        {
+            "nombre": "Computador",
+            "precio": 1000000,
+            "descripcion": "Buen estado",
+            "vendedor": "cris"
         }
     ]
 }
