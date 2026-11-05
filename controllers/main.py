@@ -128,26 +128,6 @@ class PrincipalScreen(Screen):
         self.bienvenida = mensaje
         nombre = self.usuario.get("nombre", "")
         self.ids.usuario_label.text = f"{self.bienvenida}, {nombre}"
-        self.actualizar_tareas()
-
-    def agregar_tarea(self):
-        texto = self.ids.tarea_input.text.strip()
-        if not texto:
-            return
-
-        self.usuario.setdefault("tareas", []).append(texto)
-        save_user(self.usuario)
-        self.ids.tarea_input.text = ""
-        self.actualizar_tareas()
-        show_notification("UCTMarket", "La tarea se guardó correctamente en JSON.")
-
-    def actualizar_tareas(self):
-        tareas = self.usuario.get("tareas", [])
-        if tareas:
-            self.ids.tareas_label.text = "\n".join(f"• {tarea}" for tarea in tareas)
-        else:
-            self.ids.tareas_label.text = "No hay tareas guardadas."
-
 
 class MarketScreen(Screen):
     def on_enter(self, *args):
