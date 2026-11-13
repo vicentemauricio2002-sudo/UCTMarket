@@ -39,7 +39,9 @@ def create_user(nombre, contrasena):
     usuario = {
         'nombre': nombre,
         'contrasena': contrasena,
-        'tareas': []
+        'usuarioFoto': "imgs/img_perfiles/placeholder.png",
+        'historial': [],
+        'listdeseos': []
     }
 
     data['usuarios'].append(usuario)
@@ -100,4 +102,60 @@ def guardar_producto(producto):
 
     except (json.JSONDecodeError, OSError, TypeError) as error:
         print("Error al guardar el producto:", error)
+        return False
+
+def actualizar_producto(producto_id, producto):
+    ruta = DATA_FILE.parent / "productos.json"
+
+    try:
+        if not ruta.exists():
+            return False
+
+        with open(ruta, "r", encoding="utf-8") as archivo:
+            datos = json.load(archivo)
+
+        productos = datos.get("productos", [])
+        indice = producto_id - 1
+
+        if indice < 0 or indice >= len(productos):
+            print("No se encontró la publicación para actualizar.")
+            return False
+
+        productos[indice] = producto
+
+        with open(ruta, "w", encoding="utf-8") as archivo:
+            json.dump(datos, archivo, ensure_ascii=False, indent=4)
+
+        return True
+
+    except (json.JSONDecodeError, OSError, TypeError) as error:
+        print("Error al actualizar el producto:", error)
+        return False
+
+def eliminar_producto(producto_id):
+    ruta = DATA_FILE.parent / "productos.json"
+
+    try:
+        if not ruta.exists():
+            return False
+
+        with open(ruta, "r", encoding="utf-8") as archivo:
+            datos = json.load(archivo)
+
+        productos = datos.get("productos", [])
+        indice = producto_id - 1
+
+        if indice < 0 or indice >= len(productos):
+            print("No se encontró la publicación para eliminar.")
+            return False
+
+        productos.pop(indice)
+
+        with open(ruta, "w", encoding="utf-8") as archivo:
+            json.dump(datos, archivo, ensure_ascii=False, indent=4)
+
+        return True
+
+    except (json.JSONDecodeError, OSError, TypeError) as error:
+        print("Error al eliminar el producto:", error)
         return False

@@ -1,15 +1,14 @@
 import sys
 from pathlib import Path
 
-# Añade la raíz del proyecto al path de Python para que reconozca 'models'
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from kivy.lang import Builder
-from kivy.properties import DictProperty, StringProperty, ObjectProperty
+from kivy.properties import DictProperty, StringProperty, ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivymd.app import MDApp
 
-from models.json_service import get_user, create_user, save_user, cargar_productos, guardar_producto
+from models.json_service import get_user, create_user, save_user, cargar_productos, guardar_producto, actualizar_producto, eliminar_producto
 from models.notification_service import show_notification
 from models.remote_config import get_welcome_message
 
@@ -18,11 +17,16 @@ from kivy.utils import get_color_from_hex
 
 from kivy.metrics import dp
 from kivymd.uix.card import MDCard
+from kivy.uix.label import Label
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField, MDTextFieldHintText
 from kivymd.uix.button import MDButton
 from kivymd.uix.button import MDButtonText
 from kivy.uix.modalview import ModalView
+from kivymd.uix.fitimage import FitImage
+from kivy.uix.filechooser import FileChooserListView
+from kivy.uix.scrollview import ScrollView
 
 Window.clearcolor = get_color_from_hex("#F8FAFC")
 
@@ -82,6 +86,9 @@ class LoginScreen(Screen):
         perfil.usuario = usuario
         perfil.actualizar_interfaz()
 
+        producto = self.manager.get_screen("producto")
+        producto.usuario = usuario
+
         show_notification(
             "UCTMarket", "Inicio de sesión realizado correctamente."
         )
@@ -128,26 +135,6 @@ class PrincipalScreen(Screen):
         self.bienvenida = mensaje
         nombre = self.usuario.get("nombre", "")
         self.ids.usuario_label.text = f"{self.bienvenida}, {nombre}"
-        self.actualizar_tareas()
-
-    def agregar_tarea(self):
-        texto = self.ids.tarea_input.text.strip()
-        if not texto:
-            return
-
-        self.usuario.setdefault("tareas", []).append(texto)
-        save_user(self.usuario)
-        self.ids.tarea_input.text = ""
-        self.actualizar_tareas()
-        show_notification("UCTMarket", "La tarea se guardó correctamente en JSON.")
-
-    def actualizar_tareas(self):
-        tareas = self.usuario.get("tareas", [])
-        if tareas:
-            self.ids.tareas_label.text = "\n".join(f"• {tarea}" for tarea in tareas)
-        else:
-            self.ids.tareas_label.text = "No hay tareas guardadas."
-
 
 class MarketScreen(Screen):
     def on_enter(self, *args):
@@ -165,10 +152,20 @@ class MarketScreen(Screen):
                 orientation="vertical",
                 padding=dp(15),
                 spacing=dp(5),
-                size_hint_y=None,
-                height=dp(150),
+                size_hint=(1, None),
                 theme_bg_color="Custom",
                 md_bg_color=MDApp.get_running_app().PALETA["blanco"],
+            )
+            tarjeta.bind(width=lambda instance, value: setattr(instance, 'height', value))
+
+            tarjeta.add_widget(
+                FitImage(
+                    source=producto.get(
+                    "imagen",
+                    "imgs/img_productos/placeholder.png"
+                ),
+                    size_hint_y=0.70
+                )
             )
 
             tarjeta.add_widget(
@@ -177,6 +174,7 @@ class MarketScreen(Screen):
                     font_style="Title",
                     theme_text_color="Custom",
                     text_color=MDApp.get_running_app().PALETA["azul_noche"],
+                    size_hint_y=0.10
                 )
             )
 
@@ -185,6 +183,7 @@ class MarketScreen(Screen):
                     text=formatear_precio(producto["precio"]),
                     theme_text_color="Custom",
                     text_color=MDApp.get_running_app().PALETA["primario"],
+                    size_hint_y=0.10
                 )
             )
 
@@ -193,6 +192,7 @@ class MarketScreen(Screen):
                     text=producto["vendedor"],
                     theme_text_color="Custom",
                     text_color=MDApp.get_running_app().PALETA["texto_secundario"],
+                    size_hint_y=0.10
                 )
             )
 
@@ -204,10 +204,21 @@ class MarketScreen(Screen):
 
     def abrir_producto(self, producto_id):
         pantalla = self.manager.get_screen("producto")
+        pantalla.pantalla_anterior = "market"
         pantalla.mostrar_producto(producto_id)
+
         self.manager.current = "producto"
 
 class ProductoScreen(Screen):
+
+    usuario = DictProperty({})
+    producto_actual = DictProperty({})
+    es_mi_publicacion = BooleanProperty(False)
+
+    pantalla_anterior = StringProperty("market")
+
+    def volver(self):
+        self.manager.current = self.pantalla_anterior
 
     def mostrar_producto(self, producto_id):
         productos = cargar_productos()
@@ -220,246 +231,789 @@ class ProductoScreen(Screen):
 
         producto = productos[indice]
 
+        self.producto_actual = producto
+        self.es_mi_publicacion = (
+            producto.get("vendedor", "") == self.usuario.get("nombre", "")
+        )
+        self.producto_id = producto_id
+
         self.ids.nombre_producto.text = str(producto["nombre"])
+        self.ids.imagen_producto.source = producto.get(
+            "imagen", "imgs/img_productos/placeholder.png"
+        )
         self.ids.precio_producto.text = formatear_precio(producto["precio"])
         self.ids.descripcion_producto.text = str(
             producto.get("descripcion", "Sin descripción")
         )
         self.ids.vendedor_producto.text = str(producto["vendedor"])
 
-
-class PerfilScreen(Screen):
-    usuario = DictProperty({})
-
-    def actualizar_interfaz(self):
-        nombre = self.usuario.get("nombre", "")
-        self.ids.usuario_nombre_label.text = nombre or "Usuario"
-        self.actualizar_publicaciones()
-
-    def actualizar_publicaciones(self):
-        nombre_usuario = self.usuario.get("nombre", "").strip()
-
-        if not nombre_usuario:
-            self.ids.publicaciones_label.text = (
-                "Inicia sesión para ver tus publicaciones."
-            )
+    def ver_imagen_completa(self):
+        imagen_path = self.ids.imagen_producto.source
+        if not imagen_path or imagen_path == "imgs/img_productos/placeholder.png":
             return
 
-        productos = cargar_productos()
+        modal = ModalView(size_hint=(0.9, 0.9))
+        fit_image = FitImage(source=imagen_path, allow_stretch=True)
+        modal.add_widget(fit_image)
+        modal.open()
 
-        mis_productos = [
-            producto
-            for producto in productos
-            if producto.get("vendedor", "").casefold()
-            == nombre_usuario.casefold()
-        ]
+    def editar_publicacion(self):
+        producto = self.producto_actual
 
-        if not mis_productos:
-            self.ids.publicaciones_label.text = (
-                "No tienes publicaciones todavía."
-            )
-            return
+        modal = ModalView(
+            size_hint=(0.85, 0.85),
+            background="",
+            background_color=(0, 0, 0, 0),
+            overlay_color=(0, 0, 0, 0.5),
+        )
 
-        lineas = []
+        scroll = ScrollView(
+            do_scroll_x=False,
+            do_scroll_y=True,
+            bar_width=dp(4),
+        )
 
-        for producto in mis_productos:
-            nombre = producto.get("nombre", "Sin nombre")
-            precio = formatear_precio(producto.get("precio", 0))
-            descripcion = producto.get(
-                "descripcion", "Sin descripción"
-            )
-
-            lineas.append(
-                f"{nombre} - {precio}\n{descripcion}"
-            )
-
-        self.ids.publicaciones_label.text = "\n\n".join(lineas)
-
-    def crear_publicacion(self):
-        if not self.usuario.get("nombre"):
-            show_notification(
-                "UCTMarket",
-                "Debes iniciar sesión para publicar productos."
-            )
-            return
-
-        contenido = MDCard(
+        contenedor = MDBoxLayout(
             orientation="vertical",
-            padding=[dp(20), dp(0), dp(20), dp(20)],
-            spacing=dp(10),
-            theme_bg_color="Custom",
-            md_bg_color=MDApp.get_running_app().PALETA["blanco"],
-            radius=[dp(16), dp(16), dp(16), dp(16)],
-            elevation=0,
+            adaptive_height=True,
+            size_hint_y=None,
+            padding=dp(10),
+        )
+        
+        contenido = MDBoxLayout(
+            orientation="vertical",
+            spacing=dp(16),
+            padding=[dp(24), dp(24), dp(24), dp(24)],
+            size_hint_y=None,
+            adaptive_height=True,
+            md_bg_color=(1, 1, 1, 1),
+            radius=[dp(20)],
         )
 
         titulo = MDLabel(
-            text="Crear publicación",
+            text="Editar publicación",
             font_style="Headline",
-            role="small",
+            role="medium",
             theme_text_color="Custom",
             text_color=MDApp.get_running_app().PALETA["azul_noche"],
-            size_hint_y=None,
-            height=dp(48),
-            halign="left",
-            valign="middle",
+            adaptive_height=True,
         )
 
-        nombre_input = MDTextField(
+        nombre = MDTextField(
+            mode="outlined",
             multiline=False,
-            size_hint_y=None,
-            height=dp(45),
+            text=str(producto.get("nombre", "")),
+        )
+        nombre.add_widget(MDTextFieldHintText(text="Nombre del producto"))
 
+        vista_previa = FitImage(
+            source=producto.get(
+                "imagen", "imgs/img_productos/placeholder.png"
+            ),
+            size_hint=(1, None),
+            height=dp(180),
         )
 
-        nombre_input.add_widget(
-            MDTextFieldHintText(
-                text="Nombre del producto",
+        ruta_imagen = {"path": producto.get("imagen", None)}
+
+        def seleccionar_imagen(*args):
+            selector = FileChooserListView(
+                path=str(Path.home()),
+                filters=["*.png", "*.jpg", "*.jpeg", "*.webp"],
             )
+
+            def colorear_entrada(chooser, entrada, parent):
+                for widget in entrada.walk():
+                    if isinstance(widget, Label):
+                        widget.color = MDApp.get_running_app().PALETA["azul_noche"]
+
+            selector.bind(on_entry_added=colorear_entrada)
+
+            selector_modal = ModalView(
+                size_hint=(0.9, 0.85),
+                background="",
+                overlay_color=(0, 0, 0, 0.5),
+            )
+
+            selector_contenido = MDBoxLayout(
+                orientation="vertical",
+                padding=dp(12),
+                spacing=dp(10),
+            )
+
+            boton_usar = MDButton(style="filled")
+            boton_usar.add_widget(MDButtonText(text="Usar imagen"))
+
+            def confirmar_imagen(*args):
+                if not selector.selection:
+                    return
+
+                ruta = selector.selection[0]
+
+                ruta_imagen["path"] = ruta
+                vista_previa.source = ruta
+
+                selector_modal.dismiss()
+
+            boton_usar.bind(on_release=confirmar_imagen)
+
+            selector_contenido.add_widget(selector)
+            selector_contenido.add_widget(boton_usar)
+
+            selector_modal.add_widget(selector_contenido)
+            selector_modal.open()
+
+        seleccionar = MDButton(style="outlined")
+        
+        seleccionar.add_widget(
+            MDButtonText(text="Seleccionar imagen")
         )
 
-        precio_input = MDTextField(
+        seleccionar.bind(on_release=seleccionar_imagen)
+
+        precio = MDTextField(
+            mode="outlined",
             multiline=False,
             input_filter="int",
-            size_hint_y=None,
-            height=dp(45),
-
+            text=str(producto.get("precio", "")),
         )
+        precio.add_widget(MDTextFieldHintText(text="Precio"))
 
-        precio_input.add_widget(
-            MDTextFieldHintText(
-                text="Precio (ej.: 250000)",
-            )
-        )
-
-        descripcion_input = MDTextField(
+        descripcion = MDTextField(
+            mode="outlined",
             multiline=True,
-            size_hint_y=None,
-            height=dp(45),
-
+            text=str(producto.get("descripcion", ""))
+        )
+        descripcion.add_widget(
+            MDTextFieldHintText(text="Descripción del producto")
         )
 
-        descripcion_input.add_widget(
-            MDTextFieldHintText(
-                text="Descripción del producto",
-            )
+        botones = MDBoxLayout(
+            orientation="horizontal",
+            adaptive_height=True,
+            spacing=dp(12),
         )
-        
 
-        guardar_boton = MDButton(
+        cancelar = MDButton(style="outlined")
+        cancelar.add_widget(MDButtonText(text="Cancelar"))
+        cancelar.bind(on_release=lambda *args: modal.dismiss())
+
+        guardar = MDButton(
             style="filled",
             theme_bg_color="Custom",
             md_bg_color=MDApp.get_running_app().PALETA["primario"],
-            size_hint_y=None,
-            height=dp(48),
+            on_release=lambda *args: self.guardar_edicion(
+                nombre.text,
+                precio.text,
+                descripcion.text,
+                ruta_imagen["path"],
+                modal
+            )
         )
-
-        guardar_boton.add_widget(
+        guardar.add_widget(
             MDButtonText(
-                text="Guardar publicación",
+                text="Guardar",
                 theme_text_color="Custom",
                 text_color=MDApp.get_running_app().PALETA["blanco"],
             )
         )
 
-        cancelar_boton = MDButton(
-            style="text",
+        eliminar = MDButton(
+            style="filled",
             theme_bg_color="Custom",
-            md_bg_color=MDApp.get_running_app().PALETA["azul_suave"],
-            size_hint_y=None,
-            height=dp(42),
+            md_bg_color=(0.85, 0.15, 0.15, 1),
         )
 
-        cancelar_boton.add_widget(
+        eliminar.add_widget(
             MDButtonText(
-                text="Cancelar",
+                text="Eliminar",
                 theme_text_color="Custom",
-                text_color=MDApp.get_running_app().PALETA["primario"],
+                text_color=(1, 1, 1, 1),
             )
         )
 
-
-        modal = ModalView(
-            size_hint=(0.85, 0.8),
-            auto_dismiss=False,
-            background_color=(0, 0, 0, 0),
+        eliminar.bind(
+            on_release=lambda *args: self.eliminar_publicacion(modal)
         )
 
-        guardar_boton.bind(
-            on_release=lambda *_: self.guardar_publicacion(
-                nombre_input.text,
-                precio_input.text,
-                descripcion_input.text,
-                modal,
-            )
-        )
-
-        cancelar_boton.bind(
-            on_release=lambda *_: modal.dismiss()
-        )
+        botones.add_widget(eliminar)
+        botones.add_widget(cancelar)
+        botones.add_widget(guardar)
 
         contenido.add_widget(titulo)
-        contenido.add_widget(nombre_input)
-        contenido.add_widget(precio_input)
-        contenido.add_widget(descripcion_input)
-        contenido.add_widget(guardar_boton)
-        contenido.add_widget(cancelar_boton)
+        contenido.add_widget(nombre)
+        contenido.add_widget(precio)
+        contenido.add_widget(descripcion)
+        contenido.add_widget(vista_previa)
+        contenido.add_widget(seleccionar)
+        contenido.add_widget(botones)
 
-        modal.add_widget(contenido)
+        contenedor.add_widget(contenido)
+        scroll.add_widget(contenedor)
+        modal.add_widget(scroll)
+
         modal.open()
 
-    def guardar_publicacion(
-        self, nombre, precio, descripcion, modal
-    ):
+    def guardar_edicion(self, nombre, precio, descripcion, ruta_imagen, modal):
         nombre = nombre.strip()
         descripcion = descripcion.strip()
-        precio = precio.strip()
 
         if not nombre or not precio or not descripcion:
             show_notification(
-                "UCTMarket",
-                "Completa todos los campos antes de guardar."
+                "Datos incompletos",
+                "Debes completar todos los campos."
             )
             return
 
         try:
-            precio_numero = int(precio)
-        except ValueError:
+            precio = int(precio)
+
+            if precio <= 0:
+                raise ValueError
+
+        except (ValueError, TypeError):
             show_notification(
-                "UCTMarket",
-                "El precio debe ser un número entero."
+                "Precio inválido",
+                "Ingresa un precio mayor que cero."
             )
             return
 
-        producto = {
-            "nombre": nombre,
-            "precio": precio_numero,
-            "descripcion": descripcion,
-            "vendedor": self.usuario.get("nombre", ""),
-        }
+        # Mantener los datos originales de la publicación.
+        producto = self.producto_actual.copy()
 
-        guardado = guardar_producto(producto)
+        # Actualizar los campos editables.
+        producto["nombre"] = nombre
+        producto["precio"] = precio
+        producto["descripcion"] = descripcion
 
-        if not guardado:
-            show_notification(
-                "UCTMarket",
-                "No se pudo guardar la publicación."
-            )
-            return
-
-        modal.dismiss()
-        self.actualizar_publicaciones()
-
-        # Actualiza el catálogo si la pantalla está disponible.
-        if self.manager and self.manager.has_screen("market"):
-            self.manager.get_screen("market").generar_productos()
-
-        show_notification(
-            "UCTMarket",
-            "Tu publicación se guardó correctamente."
+        # Mantener la imagen actual si no se seleccionó otra.
+        imagen_original = self.producto_actual.get(
+            "imagen",
+            "imgs/img_productos/placeholder.png"
         )
 
+        imagen = imagen_original
+
+        if ruta_imagen and ruta_imagen != imagen_original:
+            import shutil
+            import uuid
+
+            try:
+                origen = Path(ruta_imagen)
+
+                carpeta = (
+                    Path(__file__).resolve().parent.parent
+                    / "imgs"
+                    / "img_productos"
+                )
+                carpeta.mkdir(parents=True, exist_ok=True)
+
+                nombre_imagen = f"{uuid.uuid4().hex}{origen.suffix.lower()}"
+                destino = carpeta / nombre_imagen
+
+                shutil.copy2(origen, destino)
+
+                imagen = f"imgs/img_productos/{nombre_imagen}"
+
+            except OSError as error:
+                print("Error al copiar la imagen:", error)
+
+                show_notification(
+                    "Error con la imagen",
+                    "No se pudo guardar la imagen seleccionada."
+                )
+                return
+
+        producto["imagen"] = imagen
+
+        # Actualizar el producto existente en el JSON.
+        resultado = actualizar_producto(self.producto_id, producto)
+
+        if resultado:
+            self.producto_actual = producto
+
+            # Actualizar la información visible.
+            self.ids.nombre_producto.text = producto["nombre"]
+            self.ids.precio_producto.text = formatear_precio(producto["precio"])
+            self.ids.descripcion_producto.text = producto["descripcion"]
+            self.ids.imagen_producto.source = producto["imagen"]
+
+            show_notification(
+                "Publicación actualizada",
+                f"Tu producto '{nombre}' se actualizó correctamente."
+            )
+
+            modal.dismiss()
+
+            # Actualizar la pantalla desde la que se abrió el producto.
+            if self.pantalla_anterior == "perfil":
+                perfil = self.manager.get_screen("perfil")
+                perfil.mostrar_tus_publicaciones()
+
+            elif self.pantalla_anterior == "market":
+                market = self.manager.get_screen("market")
+                market.generar_productos()
+
+        else:
+            show_notification(
+                "Error al actualizar",
+                "No se pudieron guardar los cambios."
+            )
     
+    def eliminar_publicacion(self, modal_edicion):
+        confirmacion = ModalView(
+            size_hint=(0.75, None),
+            height=dp(190),
+            background="",
+            background_color=(0, 0, 0, 0),
+            overlay_color=(0, 0, 0, 0.5),
+        )
+
+        contenido = MDBoxLayout(
+            orientation="vertical",
+            padding=dp(20),
+            spacing=dp(12),
+            md_bg_color=MDApp.get_running_app().PALETA["blanco"],
+            radius=[dp(20)],
+        )
+
+        titulo = MDLabel(
+            text="¿Eliminar publicación?",
+            font_style="Title",
+            theme_text_color="Custom",
+            text_color=MDApp.get_running_app().PALETA["azul_noche"],
+            adaptive_height=True,
+        )
+
+        mensaje = MDLabel(
+            text="Esta acción no se puede deshacer.",
+            theme_text_color="Custom",
+            text_color=MDApp.get_running_app().PALETA["texto_secundario"],
+            adaptive_height=True,
+        )
+
+        botones = MDBoxLayout(
+            orientation="horizontal",
+            adaptive_height=True,
+            spacing=dp(10),
+        )
+
+        cancelar = MDButton(style="outlined")
+        cancelar.add_widget(MDButtonText(text="Cancelar"))
+        cancelar.bind(
+            on_release=lambda *args: confirmacion.dismiss()
+        )
+
+        eliminar = MDButton(
+            style="filled",
+            theme_bg_color="Custom",
+            md_bg_color=(0.85, 0.15, 0.15, 1),
+        )
+
+        eliminar.add_widget(
+            MDButtonText(
+                text="Eliminar",
+                theme_text_color="Custom",
+                text_color=(1, 1, 1, 1),
+            )
+        )
+
+        def confirmar_eliminacion(*args):
+            resultado = eliminar_producto(self.producto_id)
+
+            if resultado:
+                show_notification(
+                    "Publicación eliminada",
+                    "Tu publicación se eliminó correctamente."
+                )
+
+                confirmacion.dismiss()
+                modal_edicion.dismiss()
+
+                if self.pantalla_anterior == "perfil":
+                    perfil = self.manager.get_screen("perfil")
+                    perfil.mostrar_tus_publicaciones()
+
+                elif self.pantalla_anterior == "market":
+                    market = self.manager.get_screen("market")
+                    market.generar_productos()
+
+                self.volver()
+
+            else:
+                show_notification(
+                    "Error al eliminar",
+                    "No se pudo eliminar la publicación."
+                )
+
+        eliminar.bind(on_release=confirmar_eliminacion)
+
+        botones.add_widget(cancelar)
+        botones.add_widget(eliminar)
+
+        contenido.add_widget(titulo)
+        contenido.add_widget(mensaje)
+        contenido.add_widget(botones)
+
+        confirmacion.add_widget(contenido)
+        confirmacion.open()
+
+
+
+
+class PerfilScreen(Screen):
+    usuario = DictProperty({})
+
+    def on_kv_post(self, base_widget):
+        contenedor = self.ids.lista_perfil_productos
+        contenedor.bind(width=self.ajustar_tamano)
+
+    def ajustar_tamano(self, instancia, ancho):
+        ancho_tarjeta = (ancho - dp(16)) / 2
+
+        for tarjeta in instancia.children:
+            tarjeta.size = (ancho_tarjeta, ancho_tarjeta)
+
+    def on_enter(self, *args):
+        self.actualizar_interfaz()
+        self.actualizar_foto_perfil()
+        self.mostrar_tus_publicaciones()
+
+    def actualizar_interfaz(self):
+        nombre = self.usuario.get("nombre", "")
+        self.ids.usuario_nombre_label.text = nombre or "Usuario"
+
+    def actualizar_foto_perfil(self):
+        foto_path = self.usuario.get("usuarioFoto", "")
+        if foto_path:
+            self.ids.usuario_foto.source = foto_path
+        else:
+            self.ids.usuario_foto.source = "imgs/img_perfiles/placeholder.png"
+
+    def crear_publicacion(self):
+        modal = ModalView(
+            size_hint=(0.85, 0.85),
+            background="",
+            background_color=(0, 0, 0, 0),
+            overlay_color=(0, 0, 0, 0.5),
+        )
+
+        scroll = ScrollView(
+            do_scroll_x=False,
+            do_scroll_y=True,
+            bar_width=dp(4),
+        )
+
+        contenedor = MDBoxLayout(
+            orientation="vertical",
+            adaptive_height=True,
+            size_hint_y=None,
+            padding=dp(10),
+        )
+        
+        contenido = MDBoxLayout(
+            orientation="vertical",
+            spacing=dp(16),
+            padding=[dp(24), dp(24), dp(24), dp(24)],
+            size_hint_y=None,
+            adaptive_height=True,
+            md_bg_color=(1, 1, 1, 1),
+            radius=[dp(20)],
+        )
+
+        titulo = MDLabel(
+            text="Crear publicación",
+            font_style="Headline",
+            role="medium",
+            theme_text_color="Custom",
+            text_color=MDApp.get_running_app().PALETA["azul_noche"],
+            adaptive_height=True,
+        )
+
+        nombre = MDTextField(
+            mode="outlined",
+            multiline=False,
+        )
+        nombre.add_widget(MDTextFieldHintText(text="Nombre del producto"))
+
+        vista_previa = FitImage(
+            source="imgs/img_productos/placeholder.png",
+            size_hint=(1, None),
+            height=dp(180),
+        )
+
+        ruta_imagen = {"path": None}
+
+        def seleccionar_imagen(*args):
+            selector = FileChooserListView(
+                path=str(Path.home()),
+                filters=["*.png", "*.jpg", "*.jpeg", "*.webp"],
+            )
+
+            def colorear_entrada(chooser, entrada, parent):
+                for widget in entrada.walk():
+                    if isinstance(widget, Label):
+                        widget.color = MDApp.get_running_app().PALETA["azul_noche"]
+
+            selector.bind(on_entry_added=colorear_entrada)
+
+            selector_modal = ModalView(
+                size_hint=(0.9, 0.85),
+                background="",
+                overlay_color=(0, 0, 0, 0.5),
+            )
+
+            selector_contenido = MDBoxLayout(
+                orientation="vertical",
+                padding=dp(12),
+                spacing=dp(10),
+            )
+
+            boton_usar = MDButton(style="filled")
+            boton_usar.add_widget(MDButtonText(text="Usar imagen"))
+
+            def confirmar_imagen(*args):
+                if not selector.selection:
+                    return
+
+                ruta = selector.selection[0]
+
+                ruta_imagen["path"] = ruta
+                vista_previa.source = ruta
+
+                selector_modal.dismiss()
+
+            boton_usar.bind(on_release=confirmar_imagen)
+
+            selector_contenido.add_widget(selector)
+            selector_contenido.add_widget(boton_usar)
+
+            selector_modal.add_widget(selector_contenido)
+            selector_modal.open()
+
+        seleccionar = MDButton(style="outlined")
+        
+        seleccionar.add_widget(
+            MDButtonText(text="Seleccionar imagen")
+        )
+
+        seleccionar.bind(on_release=seleccionar_imagen)
+
+        precio = MDTextField(
+            mode="outlined",
+            multiline=False,
+            input_filter="int",
+        )
+        precio.add_widget(MDTextFieldHintText(text="Precio"))
+
+        descripcion = MDTextField(
+            mode="outlined",
+            multiline=True,
+        )
+        descripcion.add_widget(
+            MDTextFieldHintText(text="Descripción del producto")
+        )
+
+        botones = MDBoxLayout(
+            orientation="horizontal",
+            adaptive_height=True,
+            spacing=dp(12),
+        )
+
+        cancelar = MDButton(style="outlined")
+        cancelar.add_widget(MDButtonText(text="Cancelar"))
+        cancelar.bind(on_release=lambda *args: modal.dismiss())
+
+        publicar = MDButton(
+            style="filled",
+            theme_bg_color="Custom",
+            md_bg_color=MDApp.get_running_app().PALETA["primario"],
+            on_release=lambda *args: self.guardar_publicacion(
+                nombre.text,
+                precio.text,
+                descripcion.text,
+                ruta_imagen["path"],
+                modal
+            )
+        )
+        publicar.add_widget(
+            MDButtonText(
+                text="Publicar",
+                theme_text_color="Custom",
+                text_color=MDApp.get_running_app().PALETA["blanco"],
+            )
+        )
+
+        botones.add_widget(cancelar)
+        botones.add_widget(publicar)
+
+        contenido.add_widget(titulo)
+        contenido.add_widget(nombre)
+        contenido.add_widget(precio)
+        contenido.add_widget(descripcion)
+        contenido.add_widget(vista_previa)
+        contenido.add_widget(seleccionar)
+        contenido.add_widget(botones)
+
+        contenedor.add_widget(contenido)
+        scroll.add_widget(contenedor)
+        modal.add_widget(scroll)
+
+        modal.open()
+    
+    def guardar_publicacion(self, nombre, precio, descripcion, ruta_imagen, modal):
+        nombre = nombre.strip()
+        descripcion = descripcion.strip()
+        vendedor = self.usuario.get("nombre", "")
+
+        # Validar campos
+        if not nombre or not precio or not descripcion:
+            show_notification(
+                "Datos incompletos",
+                "Debes completar todos los campos."
+            )
+            return
+
+        # Validar precio
+        try:
+            precio = int(precio)
+
+            if precio <= 0:
+                raise ValueError
+
+        except (ValueError, TypeError):
+            show_notification(
+                "Precio inválido",
+                "Ingresa un precio mayor que cero."
+            )
+            return
+
+        # Preparar imagen
+        imagen = "imgs/img_productos/placeholder.png"
+
+        if ruta_imagen:
+            import shutil
+            import uuid
+
+            try:
+                origen = Path(ruta_imagen)
+
+                carpeta = Path(__file__).resolve().parent.parent / "imgs" / "img_productos"
+                carpeta.mkdir(parents=True, exist_ok=True)
+
+                nombre_imagen = f"{uuid.uuid4().hex}{origen.suffix.lower()}"
+                destino = carpeta / nombre_imagen
+
+                shutil.copy2(origen, destino)
+
+                imagen = f"imgs/img_productos/{nombre_imagen}"
+
+            except OSError as error:
+                print("Error al copiar la imagen:", error)
+
+                show_notification(
+                    "Error con la imagen",
+                    "No se pudo guardar la imagen seleccionada."
+                )
+                return
+
+        # Crear diccionario del producto
+        producto = {
+            "nombre": nombre,
+            "precio": precio,
+            "descripcion": descripcion,
+            "vendedor": vendedor,
+            "imagen": imagen
+        }
+
+        # Guardar publicación en JSON
+        resultado = guardar_producto(producto)
+
+        if resultado:
+            show_notification(
+                "Publicación creada",
+                f"Tu producto '{nombre}' se publicó correctamente."
+            )
+
+            modal.dismiss()
+            self.mostrar_tus_publicaciones()
+
+        else:
+            show_notification(
+                "Error al publicar",
+                "No se pudo guardar tu publicación."
+            )
+    
+    def mostrar_tus_publicaciones(self):
+        contenedor = self.ids.lista_perfil_productos
+        contenedor.clear_widgets()
+        productos = cargar_productos()
+
+        for producto_id, producto in enumerate(productos, start=1):
+            if producto.get("vendedor", "") != self.usuario.get("nombre", ""):
+                continue
+
+            tarjeta = MDCard(
+                style="filled",
+                orientation="vertical",
+                padding=dp(15),
+                spacing=dp(5),
+                size_hint=(None, None),
+                theme_bg_color="Custom",
+                md_bg_color=MDApp.get_running_app().PALETA["fondo"],
+            )
+
+            tarjeta.add_widget(
+                FitImage(
+                    source=producto.get(
+                    "imagen",
+                    "imgs/img_productos/placeholder.png"
+                ),
+                    size_hint_y=0.70
+                )
+            )
+
+            tarjeta.add_widget(
+                MDLabel(
+                    text=producto["nombre"],
+                    font_style="Title",
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().PALETA["azul_noche"],
+                    size_hint_y=0.10
+                )
+            )
+
+            tarjeta.add_widget(
+                MDLabel(
+                    text=formatear_precio(producto["precio"]),
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().PALETA["primario"],
+                    size_hint_y=0.10
+                )
+            )
+
+            tarjeta.add_widget(
+                MDLabel(
+                    text=producto["vendedor"],
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().PALETA["texto_secundario"],
+                    size_hint_y=0.10
+                )
+            )
+
+            tarjeta.bind(
+                on_release=lambda instancia, pid=producto_id: self.abrir_producto(pid)
+            )
+
+            contenedor.add_widget(tarjeta)
+        self.ajustar_tamano(contenedor, contenedor.width)
+        
+    def abrir_producto(self, producto_id):
+        pantalla = self.manager.get_screen("producto")
+        pantalla.pantalla_anterior = "perfil"
+        pantalla.mostrar_producto(producto_id)
+
+        self.manager.current = "producto"
 
 
 class MainApp(MDApp):

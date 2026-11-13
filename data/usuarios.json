@@ -3,14 +3,23 @@
         {
             "nombre": "admin",
             "contrasena": "123",
-            "tareas": []
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "historial": [],
+            "listdeseos": []
         },
         {
-            "nombre": "cris",
+            "nombre": "JuanMomo",
             "contrasena": "123",
-            "tareas": [
-                "tarea 1"
-            ]
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "historial": [],
+            "listdeseos": []
+        },
+        {
+            "nombre": "MaríaJuana",
+            "contrasena": "123",
+            "historial": [],
+            "listdeseos": []
         }
+
     ]
 }
