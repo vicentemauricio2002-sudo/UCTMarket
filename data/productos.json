@@ -2,24 +2,39 @@
     "productos": [
         {
             "nombre": "Mouse",
-            "precio": 7900,
+            "precio": 8900,
             "descripcion": "Mouse en buen estado",
             "imagen": "imgs/img_productos/9142db1870674c718083f5e64be690db.png",
-            "vendedor": "admin"
+            "vendedor": "admin",
+            "id": "91fe71d9-4e3d-4c1a-b4ba-7b9f5745ef71",
+            "whatsapp": "56995160760"
         },
         {
             "nombre": "iPhone 12",
             "precio": 250000,
             "descripcion": "Buen estado",
             "imagen": "imgs/img_productos/iphone12.jpg",
-            "vendedor": "JuanMomo"
+            "vendedor": "JuanMomo",
+            "id": "510aee15-9916-4c15-9119-b9329f381d19",
+            "whatsapp": "56911111111"
         },
         {
             "nombre": "Libro de cálculo",
             "precio": 15000,
             "descripcion": "Libro usado en buen estado",
             "imagen": "imgs/img_productos/libro_calculo.jpg",
-            "vendedor": "MaríaJuana"
+            "vendedor": "MaríaJuana",
+            "id": "a11714bb-299e-4fbc-9635-243cf24509de",
+            "whatsapp": "56911111111"
+        },
+        {
+            "id": "9b1502f9-dbfc-4868-a2ac-8569d84cbeae",
+            "nombre": "test",
+            "precio": 1,
+            "descripcion": "11",
+            "vendedor": "admin",
+            "whatsapp": "56911111111",
+            "imagen": "imgs/img_productos/placeholder.png"
         }
     ]
 }

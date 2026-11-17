@@ -5,21 +5,34 @@
             "contrasena": "123",
             "usuarioFoto": "imgs/img_perfiles/placeholder.png",
             "historial": [],
-            "listdeseos": []
+            "listaDeseos": [
+                "a11714bb-299e-4fbc-9635-243cf24509de",
+                "510aee15-9916-4c15-9119-b9329f381d19"
+            ]
         },
         {
             "nombre": "JuanMomo",
             "contrasena": "123",
             "usuarioFoto": "imgs/img_perfiles/placeholder.png",
             "historial": [],
-            "listdeseos": []
+            "listaDeseos": [
+                "91fe71d9-4e3d-4c1a-b4ba-7b9f5745ef71"
+            ]
         },
         {
             "nombre": "MaríaJuana",
             "contrasena": "123",
             "historial": [],
-            "listdeseos": []
+            "listaDeseos": []
+        },
+        {
+            "nombre": "Vicente",
+            "contrasena": "123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "historial": [],
+            "listaDeseos": [
+                "91fe71d9-4e3d-4c1a-b4ba-7b9f5745ef71"
+            ]
         }
-
     ]
 }

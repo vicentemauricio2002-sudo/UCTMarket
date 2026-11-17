@@ -27,6 +27,12 @@ from kivy.uix.modalview import ModalView
 from kivymd.uix.fitimage import FitImage
 from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.scrollview import ScrollView
+from kivymd.uix.button import MDButtonIcon
+
+import uuid
+
+import webbrowser
+from urllib.parse import quote
 
 Window.clearcolor = get_color_from_hex("#F8FAFC")
 
@@ -130,33 +136,46 @@ class PrincipalScreen(Screen):
     usuario = DictProperty({})
     bienvenida = StringProperty("Bienvenido a UCTMarket")
 
+    def on_enter(self, *args):
+        self.mostrar_lista_deseos()
+
     def actualizar_interfaz(self):
         mensaje = get_welcome_message() or "Bienvenido a UCTMarket"
         self.bienvenida = mensaje
         nombre = self.usuario.get("nombre", "")
         self.ids.usuario_label.text = f"{self.bienvenida}, {nombre}"
 
-class MarketScreen(Screen):
-    def on_enter(self, *args):
-        self.generar_productos()
-
-    def generar_productos(self):
-        contenedor = self.ids.lista_productos
+    def mostrar_lista_deseos(self):
+        contenedor = self.ids.lista_de_deseos_productos
         contenedor.clear_widgets()
 
-        productos = cargar_productos()
+        lista_deseos = self.usuario.get("listaDeseos", [])
+        if not lista_deseos:
+            self.ids.listdeseos_label.text = "Tu lista de deseos está vacía."
+            return
 
-        for producto_id, producto in enumerate(productos, start=1):
+        self.ids.listdeseos_label.text = ""
+
+        productos = cargar_productos()
+        productos_deseados = [
+            p for p in productos if p.get("id") in lista_deseos
+        ]
+
+        if not productos_deseados:
+            self.ids.listdeseos_label.text = "No se encontraron productos en tu lista de deseos."
+
+        for producto in productos_deseados:
+            producto_id = producto["id"]
+
             tarjeta = MDCard(
-                style="elevated",
+                style="filled",
                 orientation="vertical",
                 padding=dp(15),
                 spacing=dp(5),
-                size_hint=(1, None),
+                size_hint=(None, None),
                 theme_bg_color="Custom",
-                md_bg_color=MDApp.get_running_app().PALETA["blanco"],
+                md_bg_color=MDApp.get_running_app().PALETA["fondo"],
             )
-            tarjeta.bind(width=lambda instance, value: setattr(instance, 'height', value))
 
             tarjeta.add_widget(
                 FitImage(
@@ -201,6 +220,100 @@ class MarketScreen(Screen):
             )
 
             contenedor.add_widget(tarjeta)
+            
+        self.ajustar_tamano(contenedor, contenedor.width)
+                    
+    def abrir_producto(self, producto_id):
+        pantalla = self.manager.get_screen("producto")
+        pantalla.pantalla_anterior = "principal"
+        pantalla.mostrar_producto(producto_id)
+
+        self.manager.current = "producto"
+
+    def ajustar_tamano(self, instancia, ancho):
+        ancho_tarjeta = (ancho - dp(16)) / 2
+
+        for tarjeta in instancia.children:
+            tarjeta.size = (ancho_tarjeta, ancho_tarjeta)
+
+class MarketScreen(Screen):
+    def on_enter(self, *args):
+        self.generar_productos()
+
+    def generar_productos(self, productos=None):
+        contenedor = self.ids.lista_productos
+        contenedor.clear_widgets()
+
+        if productos is None:
+            productos = cargar_productos()
+
+        for producto in productos:
+            producto_id = producto["id"]
+
+            tarjeta = MDCard(
+                style="elevated",
+                orientation="vertical",
+                padding=dp(15),
+                spacing=dp(5),
+                size_hint=(None, None),
+                theme_bg_color="Custom",
+                md_bg_color=MDApp.get_running_app().PALETA["blanco"],
+            )
+            tarjeta.bind(
+                width=lambda instance, value: setattr(instance, 'height', value)
+            )
+
+            tarjeta.add_widget(
+                FitImage(
+                    source=producto.get(
+                        "imagen",
+                        "imgs/img_productos/placeholder.png"
+                    ),
+                    size_hint_y=0.70
+                )
+            )
+
+            tarjeta.add_widget(
+                MDLabel(
+                    text=producto["nombre"],
+                    font_style="Title",
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().PALETA["azul_noche"],
+                    size_hint_y=0.10
+                )
+            )
+
+            tarjeta.add_widget(
+                MDLabel(
+                    text=formatear_precio(producto["precio"]),
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().PALETA["primario"],
+                    size_hint_y=0.10
+                )
+            )
+
+            tarjeta.add_widget(
+                MDLabel(
+                    text=producto["vendedor"],
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().PALETA["texto_secundario"],
+                    size_hint_y=0.10
+                )
+            )
+
+            tarjeta.bind(
+                on_release=lambda instancia, pid=producto_id: self.abrir_producto(pid)
+            )
+
+            contenedor.add_widget(tarjeta)
+
+        self.ajustar_tamano(contenedor, contenedor.width)
+
+    def ajustar_tamano(self, instancia, ancho):
+        ancho_tarjeta = (ancho - dp(16)) / 2
+
+        for tarjeta in instancia.children:
+            tarjeta.size = (ancho_tarjeta, ancho_tarjeta)
 
     def abrir_producto(self, producto_id):
         pantalla = self.manager.get_screen("producto")
@@ -208,6 +321,23 @@ class MarketScreen(Screen):
         pantalla.mostrar_producto(producto_id)
 
         self.manager.current = "producto"
+
+    def buscar_productos(self, texto):
+        productos = cargar_productos()
+
+        texto = texto.strip().lower()
+
+        if not texto:
+            self.generar_productos(productos)
+            return
+
+        resultados = [
+            producto for producto in productos
+            if texto in producto.get("nombre", "").lower()
+        ]
+
+        self.generar_productos(resultados)
+        
 
 class ProductoScreen(Screen):
 
@@ -220,18 +350,27 @@ class ProductoScreen(Screen):
     def volver(self):
         self.manager.current = self.pantalla_anterior
 
+    icono_deseos = StringProperty("heart-outline")
+
     def mostrar_producto(self, producto_id):
         productos = cargar_productos()
 
-        indice = producto_id - 1
+        producto = next(
+            (p for p in productos if p.get("id") == producto_id),
+            None
+        )
 
-        if indice < 0 or indice >= len(productos):
+        if producto is None:
             print("No se encontró el producto:", producto_id)
             return
 
-        producto = productos[indice]
-
         self.producto_actual = producto
+
+        lista_deseos = self.usuario.get("listaDeseos", [])
+        self.icono_deseos = (
+            "heart" if producto_id in lista_deseos
+            else "heart-outline"
+)
         self.es_mi_publicacion = (
             producto.get("vendedor", "") == self.usuario.get("nombre", "")
         )
@@ -247,6 +386,28 @@ class ProductoScreen(Screen):
         )
         self.ids.vendedor_producto.text = str(producto["vendedor"])
 
+    def comprar_producto(self):
+        producto = self.producto_actual
+
+        whatsapp = producto.get("whatsapp", "")
+        nombre = producto.get("nombre", "este producto")
+
+        if not whatsapp:
+            show_notification(
+                "Contacto no disponible",
+                "El vendedor no ha registrado su WhatsApp."
+            )
+            return
+
+        mensaje = (
+            f"Hola, vi tu publicación de '{nombre}' "
+            "en UCTMarket y me interesa. ¿Sigue disponible?"
+        )
+
+        enlace = f"https://wa.me/{whatsapp}?text={quote(mensaje)}"
+
+        webbrowser.open(enlace)
+        
     def ver_imagen_completa(self):
         imagen_path = self.ids.imagen_producto.source
         if not imagen_path or imagen_path == "imgs/img_productos/placeholder.png":
@@ -363,8 +524,12 @@ class ProductoScreen(Screen):
             selector_modal.add_widget(selector_contenido)
             selector_modal.open()
 
-        seleccionar = MDButton(style="outlined")
+        seleccionar = MDButton(style="text")
         
+        seleccionar.add_widget(
+            MDButtonIcon(icon="image-outline")
+        )
+
         seleccionar.add_widget(
             MDButtonText(text="Seleccionar imagen")
         )
@@ -388,6 +553,16 @@ class ProductoScreen(Screen):
             MDTextFieldHintText(text="Descripción del producto")
         )
 
+        contacto = MDTextField(
+            mode="outlined",
+            multiline=False,
+            input_filter="int",
+            text=str(producto.get("whatsapp", "")),
+        )
+        contacto.add_widget(
+            MDTextFieldHintText(text="WhatsApp (Ej: 56912345678)")
+        )
+
         botones = MDBoxLayout(
             orientation="horizontal",
             adaptive_height=True,
@@ -406,6 +581,7 @@ class ProductoScreen(Screen):
                 nombre.text,
                 precio.text,
                 descripcion.text,
+                contacto.text,
                 ruta_imagen["path"],
                 modal
             )
@@ -444,6 +620,7 @@ class ProductoScreen(Screen):
         contenido.add_widget(nombre)
         contenido.add_widget(precio)
         contenido.add_widget(descripcion)
+        contenido.add_widget(contacto)
         contenido.add_widget(vista_previa)
         contenido.add_widget(seleccionar)
         contenido.add_widget(botones)
@@ -454,7 +631,7 @@ class ProductoScreen(Screen):
 
         modal.open()
 
-    def guardar_edicion(self, nombre, precio, descripcion, ruta_imagen, modal):
+    def guardar_edicion(self, nombre, precio, descripcion, contacto, ruta_imagen, modal):
         nombre = nombre.strip()
         descripcion = descripcion.strip()
 
@@ -478,6 +655,15 @@ class ProductoScreen(Screen):
             )
             return
 
+        contacto = contacto.strip()
+
+        if not contacto.startswith("569") or len(contacto) != 11:
+            show_notification(
+                "WhatsApp inválido",
+                "Ingresa un número chileno válido. Ejemplo: 56912345678."
+            )
+            return
+
         # Mantener los datos originales de la publicación.
         producto = self.producto_actual.copy()
 
@@ -485,6 +671,7 @@ class ProductoScreen(Screen):
         producto["nombre"] = nombre
         producto["precio"] = precio
         producto["descripcion"] = descripcion
+        producto["whatsapp"] = contacto
 
         # Mantener la imagen actual si no se seleccionó otra.
         imagen_original = self.producto_actual.get(
@@ -496,7 +683,6 @@ class ProductoScreen(Screen):
 
         if ruta_imagen and ruta_imagen != imagen_original:
             import shutil
-            import uuid
 
             try:
                 origen = Path(ruta_imagen)
@@ -658,6 +844,41 @@ class ProductoScreen(Screen):
         confirmacion.add_widget(contenido)
         confirmacion.open()
 
+    def alternar_lista_deseos(self):
+        producto = self.producto_actual
+        usuario = self.usuario
+
+        if not producto or not usuario:
+            return
+
+        producto_id = producto["id"]
+        lista_deseos = usuario.get("listaDeseos", [])
+
+        # Comprobar si el producto ya está en la lista
+        if producto_id in lista_deseos:
+            lista_deseos.remove(producto_id)
+            nuevo_icono = "heart-outline"
+            mensaje = "Producto eliminado de tu lista de deseos."
+
+        else:
+            lista_deseos.append(producto_id)
+            nuevo_icono = "heart"
+            mensaje = "Producto agregado a tu lista de deseos."
+
+        usuario["listaDeseos"] = lista_deseos
+
+        resultado = save_user(usuario)
+
+        if resultado:
+            self.icono_deseos = nuevo_icono
+            show_notification("Lista de deseos", mensaje)
+
+        else:
+            show_notification(
+                "Error",
+                "No se pudo actualizar tu lista de deseos."
+            )
+
 
 
 
@@ -734,7 +955,31 @@ class PerfilScreen(Screen):
             mode="outlined",
             multiline=False,
         )
-        nombre.add_widget(MDTextFieldHintText(text="Nombre del producto"))
+        nombre.add_widget(MDTextFieldHintText(text="Nombre del producto (Ej: Celular, Laptop, etc.)"))
+
+        precio = MDTextField(
+            mode="outlined",
+            multiline=False,
+            input_filter="int",
+        )
+        precio.add_widget(MDTextFieldHintText(text="Precio (Ej: 1000, 20000, etc.)"))
+
+        descripcion = MDTextField(
+            mode="outlined",
+            multiline=True,
+        )
+        descripcion.add_widget(
+            MDTextFieldHintText(text="Descripción del producto (Ej: Excelente estado, sin uso, etc.)")
+        )
+
+        contacto = MDTextField(
+            mode="outlined",
+            multiline=False,
+            input_filter="int",
+        )
+        contacto.add_widget(
+            MDTextFieldHintText(text="WhatsApp (Ej: 56912345678)")
+        )
 
         vista_previa = FitImage(
             source="imgs/img_productos/placeholder.png",
@@ -791,28 +1036,19 @@ class PerfilScreen(Screen):
             selector_modal.add_widget(selector_contenido)
             selector_modal.open()
 
-        seleccionar = MDButton(style="outlined")
-        
+        seleccionar = MDButton(style="text")
+                
+        seleccionar.add_widget(
+            MDButtonIcon(icon="image-outline")
+        )
+
         seleccionar.add_widget(
             MDButtonText(text="Seleccionar imagen")
         )
+        
+
 
         seleccionar.bind(on_release=seleccionar_imagen)
-
-        precio = MDTextField(
-            mode="outlined",
-            multiline=False,
-            input_filter="int",
-        )
-        precio.add_widget(MDTextFieldHintText(text="Precio"))
-
-        descripcion = MDTextField(
-            mode="outlined",
-            multiline=True,
-        )
-        descripcion.add_widget(
-            MDTextFieldHintText(text="Descripción del producto")
-        )
 
         botones = MDBoxLayout(
             orientation="horizontal",
@@ -832,6 +1068,7 @@ class PerfilScreen(Screen):
                 nombre.text,
                 precio.text,
                 descripcion.text,
+                contacto.text,
                 ruta_imagen["path"],
                 modal
             )
@@ -851,6 +1088,7 @@ class PerfilScreen(Screen):
         contenido.add_widget(nombre)
         contenido.add_widget(precio)
         contenido.add_widget(descripcion)
+        contenido.add_widget(contacto)
         contenido.add_widget(vista_previa)
         contenido.add_widget(seleccionar)
         contenido.add_widget(botones)
@@ -861,7 +1099,7 @@ class PerfilScreen(Screen):
 
         modal.open()
     
-    def guardar_publicacion(self, nombre, precio, descripcion, ruta_imagen, modal):
+    def guardar_publicacion(self, nombre, precio, descripcion, contacto, ruta_imagen, modal):
         nombre = nombre.strip()
         descripcion = descripcion.strip()
         vendedor = self.usuario.get("nombre", "")
@@ -888,12 +1126,20 @@ class PerfilScreen(Screen):
             )
             return
 
+        contacto = contacto.strip()
+
+        if not contacto.startswith("569") or len(contacto) != 11:
+            show_notification(
+                "WhatsApp inválido",
+                "Ingresa un número chileno válido. Ejemplo: 56912345678."
+            )
+            return
+
         # Preparar imagen
         imagen = "imgs/img_productos/placeholder.png"
 
         if ruta_imagen:
             import shutil
-            import uuid
 
             try:
                 origen = Path(ruta_imagen)
@@ -919,10 +1165,12 @@ class PerfilScreen(Screen):
 
         # Crear diccionario del producto
         producto = {
+            "id": str(uuid.uuid4()),
             "nombre": nombre,
             "precio": precio,
             "descripcion": descripcion,
             "vendedor": vendedor,
+            "whatsapp": contacto,
             "imagen": imagen
         }
 
@@ -949,7 +1197,9 @@ class PerfilScreen(Screen):
         contenedor.clear_widgets()
         productos = cargar_productos()
 
-        for producto_id, producto in enumerate(productos, start=1):
+        for producto in productos:
+            producto_id = producto["id"]
+
             if producto.get("vendedor", "") != self.usuario.get("nombre", ""):
                 continue
 

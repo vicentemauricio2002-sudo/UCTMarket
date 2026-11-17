@@ -315,47 +315,6 @@ MDBoxLayout:
                         theme_text_color: "Custom"
                         text_color: app.PALETA["azul_noche"]
                         adaptive_height: True
-
-             
-                MDCard:
-                    style: "elevated"
-                    orientation: "vertical"
-                    theme_bg_color: "Custom"
-                    md_bg_color: app.PALETA["blanco"]
-                    padding: [dp(18), dp(18), dp(18), dp(18)]
-                    spacing: dp(12)
-                    size_hint_y: None
-                    height: self.minimum_height
-                    radius: [dp(20)]
-                    elevation: 1
-
-                    MDLabel:
-                        text: "Historial de compras"
-                        font_style: "Title"
-                        role: "large"
-                        theme_text_color: "Custom"
-                        text_color: app.PALETA["azul_noche"]
-                        adaptive_height: True
-
-                    MDLabel:
-                        text: "Tus compras recientes aparecerán aquí."
-                        font_style: "Body"
-                        role: "medium"
-                        theme_text_color: "Custom"
-                        text_color: app.PALETA["texto_secundario"]
-                        adaptive_height: True
-                    
-                    MDLabel:
-                        id: historial_label
-                        text: "Aún no has realizado compras."
-                        font_style: "Body"
-                        role: "medium"
-                        theme_text_color: "Custom"
-                        text_color: app.PALETA["texto"]
-                        size_hint_y: None
-                        height: self.texture_size[1] + dp(8)
-                        text_size: self.width, None
-
       
                 MDBoxLayout:
                     orientation: "vertical"
@@ -392,7 +351,7 @@ MDBoxLayout:
 
                         MDLabel:
                             id: listdeseos_label
-                            text: "No hay productos en tu lista de deseos."
+                            text: ""
                             font_style: "Body"
                             role: "medium"
                             theme_text_color: "Custom"
@@ -400,6 +359,12 @@ MDBoxLayout:
                             size_hint_y: None
                             height: self.texture_size[1] + dp(8)
                             text_size: self.width, None
+                        
+                        MDGridLayout:
+                            id: lista_de_deseos_productos
+                            adaptive_height: True
+                            spacing: dp(16)
+                            cols: 2
 
 
 <MarketScreen>:
@@ -430,6 +395,8 @@ MDBoxLayout:
                     mode: "outlined"
                     pos_hint: {"center_x": 0.5}
                     height: dp(56)
+                    on_text: root.buscar_productos(self.text)
+
                     MDTextFieldHintText:
                         text: "Buscar productos..."
                         theme_text_color: "Custom"
@@ -534,6 +501,37 @@ MDBoxLayout:
                         FitImage:
                             id: imagen_producto
                             source: "imgs/img_productos/placeholder.png"
+
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        adaptive_height: True
+                        spacing: dp(4)
+
+                        MDButton:
+                            style: "filled"
+                            theme_bg_color: "Custom"
+                            md_bg_color: app.PALETA["primario"]
+                            opacity: 0.4 if root.es_mi_publicacion else 1
+                            disabled: root.es_mi_publicacion
+                            on_release: root.comprar_producto()
+
+                            MDButtonText:
+                                text: "Comprar"
+                                theme_text_color: "Custom"
+                                text_color: app.PALETA["blanco"]
+
+                        MDButton:
+                            style: "text"
+                            opacity: 0.4 if root.es_mi_publicacion else 1
+                            disabled: root.es_mi_publicacion
+                            on_release: root.alternar_lista_deseos()
+
+                            MDButtonIcon:
+                                icon: root.icono_deseos
+                                theme_icon_color: "Custom"
+                                icon_color: app.PALETA["primario"]
+                                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    
 
                     MDLabel:
                         text: "Precio:"

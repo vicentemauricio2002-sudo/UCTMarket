@@ -1,4 +1,5 @@
 import json
+import uuid
 from pathlib import Path
 
 DATA_FILE = Path(__file__).resolve().parent.parent / 'data' / 'usuarios.json'
@@ -41,7 +42,7 @@ def create_user(nombre, contrasena):
         'contrasena': contrasena,
         'usuarioFoto': "imgs/img_perfiles/placeholder.png",
         'historial': [],
-        'listdeseos': []
+        'listaDeseos': []
     }
 
     data['usuarios'].append(usuario)
@@ -50,13 +51,22 @@ def create_user(nombre, contrasena):
     return usuario
 
 def save_user(usuario):
-    data=load_data()
+    try:
+        data = load_data()
 
-    for i,u in enumerate(data['usuarios']):
-        if u.get('nombre','').lower()==usuario.get('nombre','').lower():
-            data['usuarios'][i]=usuario; save_data(data); return
-        
-    data['usuarios'].append(usuario); save_data(data)
+        for i, u in enumerate(data['usuarios']):
+            if u.get('nombre', '').lower() == usuario.get('nombre', '').lower():
+                data['usuarios'][i] = usuario
+                save_data(data)
+                return True
+
+        data['usuarios'].append(usuario)
+        save_data(data)
+        return True
+
+    except (OSError, TypeError, ValueError) as error:
+        print("Error al guardar el usuario:", error)
+        return False
 
 def cargar_productos():
     ruta = DATA_FILE.parent / "productos.json"
@@ -72,9 +82,32 @@ def cargar_productos():
         with open(ruta, "r", encoding="utf-8") as archivo:
             datos = json.load(archivo)
 
-        return datos.get("productos", [])
+        productos = datos.get("productos", [])
 
-    except (json.JSONDecodeError, OSError) as error:
+        if not isinstance(productos, list):
+            return []
+
+        # Asignar identificadores a publicaciones antiguas.
+        modificados = False
+
+        for producto in productos:
+            if not producto.get("id"):
+                producto["id"] = str(uuid.uuid4())
+                modificados = True
+
+        # Guardar los identificadores nuevos en el JSON.
+        if modificados:
+            with open(ruta, "w", encoding="utf-8") as archivo:
+                json.dump(
+                    datos,
+                    archivo,
+                    ensure_ascii=False,
+                    indent=4
+                )
+
+        return productos
+
+    except (json.JSONDecodeError, OSError, TypeError, AttributeError) as error:
         print("Error al cargar los productos:", error)
         return []
 
@@ -115,18 +148,24 @@ def actualizar_producto(producto_id, producto):
             datos = json.load(archivo)
 
         productos = datos.get("productos", [])
-        indice = producto_id - 1
 
-        if indice < 0 or indice >= len(productos):
-            print("No se encontró la publicación para actualizar.")
-            return False
+        for indice, producto_guardado in enumerate(productos):
+            if producto_guardado.get("id") == producto_id:
 
-        productos[indice] = producto
+                productos[indice] = producto
 
-        with open(ruta, "w", encoding="utf-8") as archivo:
-            json.dump(datos, archivo, ensure_ascii=False, indent=4)
+                with open(ruta, "w", encoding="utf-8") as archivo:
+                    json.dump(
+                        datos,
+                        archivo,
+                        ensure_ascii=False,
+                        indent=4
+                    )
 
-        return True
+                return True
+
+        print("No se encontró la publicación para actualizar.")
+        return False
 
     except (json.JSONDecodeError, OSError, TypeError) as error:
         print("Error al actualizar el producto:", error)
@@ -143,18 +182,24 @@ def eliminar_producto(producto_id):
             datos = json.load(archivo)
 
         productos = datos.get("productos", [])
-        indice = producto_id - 1
 
-        if indice < 0 or indice >= len(productos):
-            print("No se encontró la publicación para eliminar.")
-            return False
+        for indice, producto_guardado in enumerate(productos):
+            if producto_guardado.get("id") == producto_id:
 
-        productos.pop(indice)
+                productos.pop(indice)
 
-        with open(ruta, "w", encoding="utf-8") as archivo:
-            json.dump(datos, archivo, ensure_ascii=False, indent=4)
+                with open(ruta, "w", encoding="utf-8") as archivo:
+                    json.dump(
+                        datos,
+                        archivo,
+                        ensure_ascii=False,
+                        indent=4
+                    )
 
-        return True
+                return True
+
+        print("No se encontró la publicación para eliminar.")
+        return False
 
     except (json.JSONDecodeError, OSError, TypeError) as error:
         print("Error al eliminar el producto:", error)
