@@ -41,7 +41,7 @@ Se consideraron características como:
 
 ## 4. Investigación y resultados de la encuesta
 
-Para complementar la identificación de necesidades se realizó una encuesta mediante Google Forms, orientada a conocer los hábitos, experiencias e interés de los posibles usuarios respecto a la búsqueda, compra, venta e intercambio de productos.
+Para complementar la identificación de necesidades se realizó una encuesta mediante Google Forms, orientada a conocer los hábitos, experiencias e interés de los posibles usuarios respecto a la búsqueda, compra, venta e intercambio de productos. La encuesta está disponible en [Google Forms](https://forms.gle/vNUfoQW6nthNXnhW9).
 
 La encuesta obtuvo **3 respuestas**. Se utilizó una escala de valoración de 1 a 5, donde 1 representa un nivel muy bajo, nunca o nada de interés, mientras que 5 representa un nivel muy alto, siempre o mucho interés.
 
