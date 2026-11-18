@@ -634,5 +634,24 @@
         "datos": {
             "nombre": "market"
         }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794971233.9600115,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "login_exitoso",
+        "ts": 1794971241.8267102,
+        "datos": {}
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794971242.0537388,
+        "datos": {
+            "nombre": "principal"
+        }
     }
 ]
