@@ -1,40 +1,184 @@
 {
     "productos": [
         {
-            "nombre": "Mouse",
-            "precio": 8900,
-            "descripcion": "Mouse en buen estado",
-            "imagen": "imgs/img_productos/9142db1870674c718083f5e64be690db.png",
-            "vendedor": "admin",
-            "id": "91fe71d9-4e3d-4c1a-b4ba-7b9f5745ef71",
-            "whatsapp": "56995160760"
+            "nombre": "Calculadora científica Casio",
+            "precio": 12000,
+            "descripcion": "Calculadora científica en buen estado, ideal para clases de matemáticas.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "CamilaRojas",
+            "id": "baad622c-796f-4a2c-8bbb-4b8916b64829",
+            "whatsapp": "56911111111"
         },
         {
-            "nombre": "iPhone 12",
-            "precio": 250000,
-            "descripcion": "Buen estado",
-            "imagen": "imgs/img_productos/iphone12.jpg",
-            "vendedor": "JuanMomo",
-            "id": "510aee15-9916-4c15-9119-b9329f381d19",
-            "whatsapp": "56911111111"
+            "nombre": "Libro de álgebra",
+            "precio": 9000,
+            "descripcion": "Libro de apoyo para álgebra, con algunas marcas de uso.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "DiegoMella",
+            "id": "dc7ac20f-a840-44be-b213-80fcdb995304",
+            "whatsapp": "56922222222"
+        },
+        {
+            "nombre": "Audífonos Bluetooth",
+            "precio": 15000,
+            "descripcion": "Audífonos inalámbricos funcionando correctamente.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "SofiaParedes",
+            "id": "0f050640-e78f-441d-bc82-701466465f75",
+            "whatsapp": "56933333333"
+        },
+        {
+            "nombre": "Mochila universitaria",
+            "precio": 18000,
+            "descripcion": "Mochila con varios compartimentos y cierres en buen estado.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "MatiasVera",
+            "id": "f696526b-e7c9-48a7-a8af-2fc7fff8f8d5",
+            "whatsapp": "56944444444"
+        },
+        {
+            "nombre": "Mouse inalámbrico",
+            "precio": 8500,
+            "descripcion": "Mouse inalámbrico USB, poco uso.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "ValentinaCruz",
+            "id": "8972c617-6f16-4d3f-9fac-b3969fe0537b",
+            "whatsapp": "56955555555"
+        },
+        {
+            "nombre": "Teclado mecánico",
+            "precio": 28000,
+            "descripcion": "Teclado mecánico compacto, todas las teclas funcionan.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "TomasFuentes",
+            "id": "dee8fc55-ef6a-4d8b-807f-5b18123c9d8c",
+            "whatsapp": "56966666666"
+        },
+        {
+            "nombre": "Cuaderno universitario",
+            "precio": 2500,
+            "descripcion": "Cuaderno universitario de 100 hojas, sin usar.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "AntoniaSilva",
+            "id": "05d35351-ec0f-47cd-8493-a19b56768a90",
+            "whatsapp": "56977777777"
+        },
+        {
+            "nombre": "Bicicleta urbana",
+            "precio": 85000,
+            "descripcion": "Bicicleta usada, adecuada para trayectos cortos.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "BenjaminReyes",
+            "id": "14f25b99-9408-45eb-9afa-2edbe1cdc197",
+            "whatsapp": "56988888888"
+        },
+        {
+            "nombre": "Polerón universitario",
+            "precio": 14000,
+            "descripcion": "Polerón talla M en buen estado.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "FlorenciaDiaz",
+            "id": "36f4036d-e27f-487c-8c15-090f4d22c4fb",
+            "whatsapp": "56999999999"
+        },
+        {
+            "nombre": "Monitor 22 pulgadas",
+            "precio": 65000,
+            "descripcion": "Monitor Full HD con cable de alimentación.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "JoaquinTorres",
+            "id": "a3a8b265-d102-4321-b291-0fb240710e49",
+            "whatsapp": "56910101010"
         },
         {
             "nombre": "Libro de cálculo",
-            "precio": 15000,
-            "descripcion": "Libro usado en buen estado",
-            "imagen": "imgs/img_productos/libro_calculo.jpg",
-            "vendedor": "MaríaJuana",
-            "id": "a11714bb-299e-4fbc-9635-243cf24509de",
+            "precio": 11000,
+            "descripcion": "Texto de cálculo diferencial e integral, usado y cuidado.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "IsidoraMuñoz",
+            "id": "72eb595e-88fe-45a3-86e1-e0fde6180e46",
+            "whatsapp": "56912121212"
+        },
+        {
+            "nombre": "Pendrive 64 GB",
+            "precio": 6000,
+            "descripcion": "Pendrive de 64 GB en buen estado.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "GabrielNavarro",
+            "id": "6c8d3797-2f0a-4639-b304-b53a9afd7ea6",
+            "whatsapp": "56913131313"
+        },
+        {
+            "nombre": "Lámpara de escritorio",
+            "precio": 7500,
+            "descripcion": "Lámpara LED para escritorio, funciona correctamente.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "MartinaLopez",
+            "id": "9943779e-d5d5-49aa-ae29-7d0e216f7a1f",
+            "whatsapp": "56914141414"
+        },
+        {
+            "nombre": "Calculadora básica",
+            "precio": 4000,
+            "descripcion": "Calculadora básica de bolsillo.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "SebastianAraya",
+            "id": "137cafc8-ccd8-4256-b689-cbfaf77b7c70",
+            "whatsapp": "56915151515"
+        },
+        {
+            "nombre": "Silla de escritorio",
+            "precio": 30000,
+            "descripcion": "Silla de escritorio usada, estructura firme.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "CatalinaMorales",
+            "id": "6ca3864d-2aaa-4fa4-8c17-ed23a070cbcd",
+            "whatsapp": "56916161616"
+        },
+        {
+            "nombre": "Cargador USB-C",
+            "precio": 9500,
+            "descripcion": "Cargador USB-C de prueba, compatible con varios dispositivos.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "CamilaRojas",
+            "id": "95a2c3ca-e89b-4437-9489-6e90b882e54d",
             "whatsapp": "56911111111"
         },
         {
-            "id": "9b1502f9-dbfc-4868-a2ac-8569d84cbeae",
-            "nombre": "test",
-            "precio": 1,
-            "descripcion": "11",
-            "vendedor": "admin",
-            "whatsapp": "56911111111",
-            "imagen": "imgs/img_productos/placeholder.png"
+            "nombre": "Estuche para lápices",
+            "precio": 3000,
+            "descripcion": "Estuche amplio para útiles de estudio.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "DiegoMella",
+            "id": "ba125cca-07a2-40bd-b1f6-53c92daa0f85",
+            "whatsapp": "56922222222"
+        },
+        {
+            "nombre": "Tablet 10 pulgadas",
+            "precio": 95000,
+            "descripcion": "Tablet usada para lectura y actividades académicas.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "SofiaParedes",
+            "id": "6cfdc8a0-f9d3-44f8-970e-d11d0e423c5f",
+            "whatsapp": "56933333333"
+        },
+        {
+            "nombre": "Set de destacadores",
+            "precio": 3500,
+            "descripcion": "Set de destacadores en buen estado.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "MatiasVera",
+            "id": "e93924b6-f59f-464a-820a-726d5079f84c",
+            "whatsapp": "56944444444"
+        },
+        {
+            "nombre": "Parlante portátil",
+            "precio": 17000,
+            "descripcion": "Parlante Bluetooth portátil, sonido funcionando correctamente.",
+            "imagen": "imgs/img_productos/placeholder.png",
+            "vendedor": "ValentinaCruz",
+            "id": "90994500-94bd-42c9-9b67-1eee1a347b45",
+            "whatsapp": "56955555555"
         }
     ]
 }

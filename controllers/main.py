@@ -34,6 +34,8 @@ import uuid
 import webbrowser
 from urllib.parse import quote
 
+from analytics import registrar
+
 Window.clearcolor = get_color_from_hex("#F8FAFC")
 
 def hex_a_rgba(hex_color):
@@ -67,21 +69,35 @@ def formatear_precio(precio):
 
 
 class LoginScreen(Screen):
+    def on_enter(self, *args):
+        registrar("pantalla_vista", {
+            "nombre": "login"
+        })
+
     def ingresar(self):
         nombre = self.ids.nombre.text.strip()
         contrasena = self.ids.contrasena.text
         if not nombre:
             self.ids.mensaje.text = "Ingresa tu nombre para continuar."
+            registrar("login_error", {
+                "motivo": "nombre_vacio"
+            })
             return
 
         if not contrasena:
             self.ids.mensaje.text = "Ingresa tu contraseña para continuar."
+            registrar("login_error", {
+                "motivo": "contrasena_vacia"
+            })
             return
 
         usuario = get_user(nombre, contrasena)
 
         if usuario is None:
             self.ids.mensaje.text = "Nombre o contraseña incorrectos."
+            registrar("login_error", {
+                "motivo": "credenciales_incorrectas"
+            })
             return
 
         principal = self.manager.get_screen("principal")
@@ -99,21 +115,34 @@ class LoginScreen(Screen):
             "UCTMarket", "Inicio de sesión realizado correctamente."
         )
         self.manager.current = "principal"
+        
+        registrar("login_exitoso")
 
     def limpiar_mensaje(self):
         self.ids.mensaje.text = ""
 
 
 class RegistroScreen(Screen):
+    def on_enter(self, *args):
+        registrar("pantalla_vista", {
+            "nombre": "registro"
+        })
+
     def registrarse(self):
         nombre = self.ids.nombre.text.strip()
         contrasena = self.ids.contrasena.text
         if not nombre:
             self.ids.mensaje.text = "Ingresa tu nombre para continuar."
+            registrar("registro_error", {
+                "motivo": "nombre_vacio"
+            })
             return
 
         if not contrasena:
             self.ids.mensaje.text = "Ingresa tu contraseña para continuar."
+            registrar("registro_error", {
+                "motivo": "contrasena_vacia"
+            })
             return
 
         usuario = create_user(nombre, contrasena)
@@ -122,12 +151,16 @@ class RegistroScreen(Screen):
             self.ids.mensaje.text = (
                 "Ese nombre ya existe o los datos no son válidos."
             )
+            registrar("registro_error", {
+                "motivo": "nombre_existente_o_datos_invalidos"
+            })
             return
 
         show_notification(
             "UCTMarket", "Registro realizado correctamente."
         )
         self.manager.current = "login"
+        registrar("registro_exitoso")
 
     def limpiar_mensaje(self):
         self.ids.mensaje.text = ""
@@ -137,6 +170,10 @@ class PrincipalScreen(Screen):
     bienvenida = StringProperty("Bienvenido a UCTMarket")
 
     def on_enter(self, *args):
+        registrar("pantalla_vista", {
+            "nombre": "principal"
+        })
+
         self.mostrar_lista_deseos()
 
     def actualizar_interfaz(self):
@@ -238,6 +275,10 @@ class PrincipalScreen(Screen):
 
 class MarketScreen(Screen):
     def on_enter(self, *args):
+        registrar("pantalla_vista", {
+            "nombre": "market"
+        })
+
         self.generar_productos()
 
     def generar_productos(self, productos=None):
@@ -337,6 +378,30 @@ class MarketScreen(Screen):
         ]
 
         self.generar_productos(resultados)
+
+    def registrar_busqueda(self, texto, tiene_foco):
+        texto = texto.strip()
+
+        if tiene_foco:
+            self.texto_busqueda_inicial = texto
+            return
+
+        if not texto:
+            return
+
+        if texto == self.texto_busqueda_inicial:
+            return
+
+        productos = cargar_productos()
+
+        resultados = [
+            producto for producto in productos
+            if texto.lower() in producto.get("nombre", "").lower()
+        ]
+
+        registrar("busqueda_realizada", {
+            "con_coincidencias": len(resultados) > 0
+        })
         
 
 class ProductoScreen(Screen):
@@ -346,6 +411,11 @@ class ProductoScreen(Screen):
     es_mi_publicacion = BooleanProperty(False)
 
     pantalla_anterior = StringProperty("market")
+
+    def on_enter(self, *args):
+        registrar("pantalla_vista", {
+            "nombre": "producto"
+        })
 
     def volver(self):
         self.manager.current = self.pantalla_anterior
@@ -365,6 +435,9 @@ class ProductoScreen(Screen):
             return
 
         self.producto_actual = producto
+        registrar("producto_visto", {
+            "producto_id": producto_id
+        })
 
         lista_deseos = self.usuario.get("listaDeseos", [])
         self.icono_deseos = (
@@ -407,7 +480,10 @@ class ProductoScreen(Screen):
         enlace = f"https://wa.me/{whatsapp}?text={quote(mensaje)}"
 
         webbrowser.open(enlace)
-        
+        registrar("click_comprar", {
+            "producto_id": self.producto_id
+        })
+
     def ver_imagen_completa(self):
         imagen_path = self.ids.imagen_producto.source
         if not imagen_path or imagen_path == "imgs/img_productos/placeholder.png":
@@ -640,6 +716,10 @@ class ProductoScreen(Screen):
                 "Datos incompletos",
                 "Debes completar todos los campos."
             )
+            registrar("publicacion_editada_error", {
+                "producto_id": self.producto_id,
+                "motivo": "datos_incompletos_nombre_precio_descripcion"
+            })
             return
 
         try:
@@ -653,6 +733,10 @@ class ProductoScreen(Screen):
                 "Precio inválido",
                 "Ingresa un precio mayor que cero."
             )
+            registrar("publicacion_editada_error", {
+                "producto_id": self.producto_id,
+                "motivo": "precio_invalido"
+            })
             return
 
         contacto = contacto.strip()
@@ -662,6 +746,10 @@ class ProductoScreen(Screen):
                 "WhatsApp inválido",
                 "Ingresa un número chileno válido. Ejemplo: 56912345678."
             )
+            registrar("publicacion_editada_error", {
+                "producto_id": self.producto_id,
+                "motivo": "whatsapp_invalido"
+            })
             return
 
         # Mantener los datos originales de la publicación.
@@ -708,6 +796,10 @@ class ProductoScreen(Screen):
                     "Error con la imagen",
                     "No se pudo guardar la imagen seleccionada."
                 )
+                registrar("publicacion_editada_error", {
+                    "producto_id": self.producto_id,
+                    "motivo": "error_al_guardar_imagen_editar"
+                })
                 return
 
         producto["imagen"] = imagen
@@ -728,6 +820,9 @@ class ProductoScreen(Screen):
                 "Publicación actualizada",
                 f"Tu producto '{nombre}' se actualizó correctamente."
             )
+            registrar("publicacion_editada_exitosa", {
+                "producto_id": self.producto_id
+            })
 
             modal.dismiss()
 
@@ -745,7 +840,11 @@ class ProductoScreen(Screen):
                 "Error al actualizar",
                 "No se pudieron guardar los cambios."
             )
-    
+            registrar("publicacion_editada_error", {
+                "producto_id": self.producto_id,
+                "motivo": "error_al_guardar_cambios"
+            })
+
     def eliminar_publicacion(self, modal_edicion):
         confirmacion = ModalView(
             size_hint=(0.75, None),
@@ -812,6 +911,9 @@ class ProductoScreen(Screen):
                     "Publicación eliminada",
                     "Tu publicación se eliminó correctamente."
                 )
+                registrar("publicacion_eliminada", {
+                    "producto_id": self.producto_id
+                })
 
                 confirmacion.dismiss()
                 modal_edicion.dismiss()
@@ -831,6 +933,9 @@ class ProductoScreen(Screen):
                     "Error al eliminar",
                     "No se pudo eliminar la publicación."
                 )
+                registrar("publicacion_eliminada_error", {
+                    "producto_id": self.producto_id
+                })
 
         eliminar.bind(on_release=confirmar_eliminacion)
 
@@ -854,16 +959,17 @@ class ProductoScreen(Screen):
         producto_id = producto["id"]
         lista_deseos = usuario.get("listaDeseos", [])
 
-        # Comprobar si el producto ya está en la lista
         if producto_id in lista_deseos:
             lista_deseos.remove(producto_id)
             nuevo_icono = "heart-outline"
             mensaje = "Producto eliminado de tu lista de deseos."
+            evento = "lista_deseos_eliminada"
 
         else:
             lista_deseos.append(producto_id)
             nuevo_icono = "heart"
             mensaje = "Producto agregado a tu lista de deseos."
+            evento = "lista_deseos_agregada"
 
         usuario["listaDeseos"] = lista_deseos
 
@@ -873,11 +979,19 @@ class ProductoScreen(Screen):
             self.icono_deseos = nuevo_icono
             show_notification("Lista de deseos", mensaje)
 
+            registrar(evento, {
+                "producto_id": producto_id
+            })
+
         else:
             show_notification(
                 "Error",
                 "No se pudo actualizar tu lista de deseos."
             )
+
+            registrar("lista_deseos_error", {
+                "producto_id": producto_id
+            })
 
 
 
@@ -896,6 +1010,10 @@ class PerfilScreen(Screen):
             tarjeta.size = (ancho_tarjeta, ancho_tarjeta)
 
     def on_enter(self, *args):
+        registrar("pantalla_vista", {
+            "nombre": "perfil"
+        })
+
         self.actualizar_interfaz()
         self.actualizar_foto_perfil()
         self.mostrar_tus_publicaciones()
@@ -1045,8 +1163,6 @@ class PerfilScreen(Screen):
         seleccionar.add_widget(
             MDButtonText(text="Seleccionar imagen")
         )
-        
-
 
         seleccionar.bind(on_release=seleccionar_imagen)
 
@@ -1110,6 +1226,9 @@ class PerfilScreen(Screen):
                 "Datos incompletos",
                 "Debes completar todos los campos."
             )
+            registrar("publicacion_error", {
+                "motivo": "campos_incompletos_nombre_precio_descripcion"
+            })
             return
 
         # Validar precio
@@ -1124,6 +1243,9 @@ class PerfilScreen(Screen):
                 "Precio inválido",
                 "Ingresa un precio mayor que cero."
             )
+            registrar("publicacion_error", {
+                "motivo": "precio_invalido"
+            })
             return
 
         contacto = contacto.strip()
@@ -1133,6 +1255,9 @@ class PerfilScreen(Screen):
                 "WhatsApp inválido",
                 "Ingresa un número chileno válido. Ejemplo: 56912345678."
             )
+            registrar("publicacion_error", {
+                "motivo": "whatsapp_invalido"
+            })
             return
 
         # Preparar imagen
@@ -1161,6 +1286,9 @@ class PerfilScreen(Screen):
                     "Error con la imagen",
                     "No se pudo guardar la imagen seleccionada."
                 )
+                registrar("publicacion_error", {
+                    "motivo": "error_al_guardar_imagen"
+                })
                 return
 
         # Crear diccionario del producto
@@ -1178,6 +1306,9 @@ class PerfilScreen(Screen):
         resultado = guardar_producto(producto)
 
         if resultado:
+            registrar("publicacion_creada", {
+                "producto_id": producto["id"]
+            })
             show_notification(
                 "Publicación creada",
                 f"Tu producto '{nombre}' se publicó correctamente."
@@ -1191,6 +1322,9 @@ class PerfilScreen(Screen):
                 "Error al publicar",
                 "No se pudo guardar tu publicación."
             )
+            registrar("publicacion_error", {
+                "motivo": "error_al_guardar_publicacion"
+            })
     
     def mostrar_tus_publicaciones(self):
         contenedor = self.ids.lista_perfil_productos

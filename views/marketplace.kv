@@ -396,6 +396,7 @@ MDBoxLayout:
                     pos_hint: {"center_x": 0.5}
                     height: dp(56)
                     on_text: root.buscar_productos(self.text)
+                    on_focus: root.registrar_busqueda(self.text, self.focus)
 
                     MDTextFieldHintText:
                         text: "Buscar productos..."

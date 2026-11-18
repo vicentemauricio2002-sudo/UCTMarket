@@ -41,7 +41,6 @@ def create_user(nombre, contrasena):
         'nombre': nombre,
         'contrasena': contrasena,
         'usuarioFoto': "imgs/img_perfiles/placeholder.png",
-        'historial': [],
         'listaDeseos': []
     }
 

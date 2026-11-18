@@ -1,0 +1,408 @@
+[
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794920400.0,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794920415.0,
+        "datos": {
+            "nombre": "registro"
+        }
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794920460.0,
+        "datos": {}
+    },
+    {
+        "evento": "registro_error",
+        "ts": 1794920483.0,
+        "datos": {
+            "motivo": "nombre_vacio"
+        }
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794920506.0,
+        "datos": {}
+    },
+    {
+        "evento": "registro_error",
+        "ts": 1794920529.0,
+        "datos": {
+            "motivo": "contrasena_vacia"
+        }
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794920552.0,
+        "datos": {}
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794920575.0,
+        "datos": {}
+    },
+    {
+        "evento": "registro_error",
+        "ts": 1794920598.0,
+        "datos": {
+            "motivo": "nombre_existente_o_datos_invalidos"
+        }
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794920621.0,
+        "datos": {}
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794920644.0,
+        "datos": {}
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794920667.0,
+        "datos": {}
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794920710.0,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "publicacion_creada",
+        "ts": 1794920760.0,
+        "datos": {
+            "producto_id": "276b2172-2f12-5651-b645-92ffe7056ed8"
+        }
+    },
+    {
+        "evento": "publicacion_creada",
+        "ts": 1794920789.0,
+        "datos": {
+            "producto_id": "c2c280bc-4687-558f-9c28-81b743753f9e"
+        }
+    },
+    {
+        "evento": "publicacion_creada",
+        "ts": 1794920818.0,
+        "datos": {
+            "producto_id": "661907ae-38d1-54e2-a2e1-3967cd80b15d"
+        }
+    },
+    {
+        "evento": "publicacion_creada",
+        "ts": 1794920847.0,
+        "datos": {
+            "producto_id": "be01b522-b7dd-5608-8dff-85cfc78b69d5"
+        }
+    },
+    {
+        "evento": "publicacion_creada",
+        "ts": 1794920876.0,
+        "datos": {
+            "producto_id": "f56af4e4-4dd4-5753-a286-e05ed248dc46"
+        }
+    },
+    {
+        "evento": "publicacion_error",
+        "ts": 1794920980.0,
+        "datos": {
+            "motivo": "campos_incompletos_nombre_precio_descripcion"
+        }
+    },
+    {
+        "evento": "publicacion_error",
+        "ts": 1794921011.0,
+        "datos": {
+            "motivo": "precio_invalido"
+        }
+    },
+    {
+        "evento": "publicacion_error",
+        "ts": 1794921042.0,
+        "datos": {
+            "motivo": "whatsapp_invalido"
+        }
+    },
+    {
+        "evento": "publicacion_error",
+        "ts": 1794921073.0,
+        "datos": {
+            "motivo": "error_al_guardar_imagen"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794921100.0,
+        "datos": {
+            "nombre": "market"
+        }
+    },
+    {
+        "evento": "publicacion_error",
+        "ts": 1794921104.0,
+        "datos": {
+            "motivo": "error_al_guardar_publicacion"
+        }
+    },
+    {
+        "evento": "busqueda_realizada",
+        "ts": 1794921130.0,
+        "datos": {
+            "con_coincidencias": true
+        }
+    },
+    {
+        "evento": "busqueda_realizada",
+        "ts": 1794921165.0,
+        "datos": {
+            "con_coincidencias": true
+        }
+    },
+    {
+        "evento": "busqueda_realizada",
+        "ts": 1794921200.0,
+        "datos": {
+            "con_coincidencias": true
+        }
+    },
+    {
+        "evento": "busqueda_realizada",
+        "ts": 1794921235.0,
+        "datos": {
+            "con_coincidencias": true
+        }
+    },
+    {
+        "evento": "busqueda_realizada",
+        "ts": 1794921270.0,
+        "datos": {
+            "con_coincidencias": false
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921350.0,
+        "datos": {
+            "producto_id": "baad622c-796f-4a2c-8bbb-4b8916b64829"
+        }
+    },
+    {
+        "evento": "lista_deseos_agregada",
+        "ts": 1794921361.0,
+        "datos": {
+            "producto_id": "baad622c-796f-4a2c-8bbb-4b8916b64829"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921374.0,
+        "datos": {
+            "producto_id": "dc7ac20f-a840-44be-b213-80fcdb995304"
+        }
+    },
+    {
+        "evento": "click_comprar",
+        "ts": 1794921382.0,
+        "datos": {
+            "producto_id": "dc7ac20f-a840-44be-b213-80fcdb995304"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921398.0,
+        "datos": {
+            "producto_id": "0f050640-e78f-441d-bc82-701466465f75"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921422.0,
+        "datos": {
+            "producto_id": "f696526b-e7c9-48a7-a8af-2fc7fff8f8d5"
+        }
+    },
+    {
+        "evento": "lista_deseos_agregada",
+        "ts": 1794921433.0,
+        "datos": {
+            "producto_id": "f696526b-e7c9-48a7-a8af-2fc7fff8f8d5"
+        }
+    },
+    {
+        "evento": "lista_deseos_eliminada",
+        "ts": 1794921438.0,
+        "datos": {
+            "producto_id": "f696526b-e7c9-48a7-a8af-2fc7fff8f8d5"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921446.0,
+        "datos": {
+            "producto_id": "8972c617-6f16-4d3f-9fac-b3969fe0537b"
+        }
+    },
+    {
+        "evento": "click_comprar",
+        "ts": 1794921454.0,
+        "datos": {
+            "producto_id": "8972c617-6f16-4d3f-9fac-b3969fe0537b"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921470.0,
+        "datos": {
+            "producto_id": "dee8fc55-ef6a-4d8b-807f-5b18123c9d8c"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921494.0,
+        "datos": {
+            "producto_id": "05d35351-ec0f-47cd-8493-a19b56768a90"
+        }
+    },
+    {
+        "evento": "lista_deseos_agregada",
+        "ts": 1794921505.0,
+        "datos": {
+            "producto_id": "05d35351-ec0f-47cd-8493-a19b56768a90"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921518.0,
+        "datos": {
+            "producto_id": "14f25b99-9408-45eb-9afa-2edbe1cdc197"
+        }
+    },
+    {
+        "evento": "click_comprar",
+        "ts": 1794921526.0,
+        "datos": {
+            "producto_id": "14f25b99-9408-45eb-9afa-2edbe1cdc197"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921542.0,
+        "datos": {
+            "producto_id": "36f4036d-e27f-487c-8c15-090f4d22c4fb"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921566.0,
+        "datos": {
+            "producto_id": "a3a8b265-d102-4321-b291-0fb240710e49"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921590.0,
+        "datos": {
+            "producto_id": "72eb595e-88fe-45a3-86e1-e0fde6180e46"
+        }
+    },
+    {
+        "evento": "lista_deseos_agregada",
+        "ts": 1794921601.0,
+        "datos": {
+            "producto_id": "72eb595e-88fe-45a3-86e1-e0fde6180e46"
+        }
+    },
+    {
+        "evento": "lista_deseos_eliminada",
+        "ts": 1794921606.0,
+        "datos": {
+            "producto_id": "72eb595e-88fe-45a3-86e1-e0fde6180e46"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921614.0,
+        "datos": {
+            "producto_id": "6c8d3797-2f0a-4639-b304-b53a9afd7ea6"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921638.0,
+        "datos": {
+            "producto_id": "9943779e-d5d5-49aa-ae29-7d0e216f7a1f"
+        }
+    },
+    {
+        "evento": "click_comprar",
+        "ts": 1794921646.0,
+        "datos": {
+            "producto_id": "9943779e-d5d5-49aa-ae29-7d0e216f7a1f"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921662.0,
+        "datos": {
+            "producto_id": "137cafc8-ccd8-4256-b689-cbfaf77b7c70"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921686.0,
+        "datos": {
+            "producto_id": "6ca3864d-2aaa-4fa4-8c17-ed23a070cbcd"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921710.0,
+        "datos": {
+            "producto_id": "95a2c3ca-e89b-4437-9489-6e90b882e54d"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921734.0,
+        "datos": {
+            "producto_id": "ba125cca-07a2-40bd-b1f6-53c92daa0f85"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921758.0,
+        "datos": {
+            "producto_id": "6cfdc8a0-f9d3-44f8-970e-d11d0e423c5f"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921782.0,
+        "datos": {
+            "producto_id": "e93924b6-f59f-464a-820a-726d5079f84c"
+        }
+    },
+    {
+        "evento": "click_comprar",
+        "ts": 1794921790.0,
+        "datos": {
+            "producto_id": "e93924b6-f59f-464a-820a-726d5079f84c"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794921806.0,
+        "datos": {
+            "producto_id": "90994500-94bd-42c9-9b67-1eee1a347b45"
+        }
+    }
+]

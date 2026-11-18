@@ -4,35 +4,123 @@
             "nombre": "admin",
             "contrasena": "123",
             "usuarioFoto": "imgs/img_perfiles/placeholder.png",
-            "historial": [],
             "listaDeseos": [
-                "a11714bb-299e-4fbc-9635-243cf24509de",
-                "510aee15-9916-4c15-9119-b9329f381d19"
+                "0f050640-e78f-441d-bc82-701466465f75",
+                "14f25b99-9408-45eb-9afa-2edbe1cdc197"
             ]
         },
         {
-            "nombre": "JuanMomo",
-            "contrasena": "123",
+            "nombre": "CamilaRojas",
+            "contrasena": "demo123",
             "usuarioFoto": "imgs/img_perfiles/placeholder.png",
-            "historial": [],
             "listaDeseos": [
-                "91fe71d9-4e3d-4c1a-b4ba-7b9f5745ef71"
+                "0f050640-e78f-441d-bc82-701466465f75",
+                "14f25b99-9408-45eb-9afa-2edbe1cdc197"
             ]
         },
         {
-            "nombre": "MaríaJuana",
-            "contrasena": "123",
-            "historial": [],
+            "nombre": "DiegoMella",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "baad622c-796f-4a2c-8bbb-4b8916b64829"
+            ]
+        },
+        {
+            "nombre": "SofiaParedes",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "dee8fc55-ef6a-4d8b-807f-5b18123c9d8c",
+                "a3a8b265-d102-4321-b291-0fb240710e49"
+            ]
+        },
+        {
+            "nombre": "MatiasVera",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "dc7ac20f-a840-44be-b213-80fcdb995304"
+            ]
+        },
+        {
+            "nombre": "ValentinaCruz",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "f696526b-e7c9-48a7-a8af-2fc7fff8f8d5",
+                "6cfdc8a0-f9d3-44f8-970e-d11d0e423c5f"
+            ]
+        },
+        {
+            "nombre": "TomasFuentes",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "72eb595e-88fe-45a3-86e1-e0fde6180e46"
+            ]
+        },
+        {
+            "nombre": "AntoniaSilva",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "8972c617-6f16-4d3f-9fac-b3969fe0537b"
+            ]
+        },
+        {
+            "nombre": "BenjaminReyes",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "9943779e-d5d5-49aa-ae29-7d0e216f7a1f"
+            ]
+        },
+        {
+            "nombre": "FlorenciaDiaz",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "6ca3864d-2aaa-4fa4-8c17-ed23a070cbcd"
+            ]
+        },
+        {
+            "nombre": "JoaquinTorres",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": [
+                "05d35351-ec0f-47cd-8493-a19b56768a90"
+            ]
+        },
+        {
+            "nombre": "IsidoraMuñoz",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
             "listaDeseos": []
         },
         {
-            "nombre": "Vicente",
-            "contrasena": "123",
+            "nombre": "GabrielNavarro",
+            "contrasena": "demo123",
             "usuarioFoto": "imgs/img_perfiles/placeholder.png",
-            "historial": [],
-            "listaDeseos": [
-                "91fe71d9-4e3d-4c1a-b4ba-7b9f5745ef71"
-            ]
+            "listaDeseos": []
+        },
+        {
+            "nombre": "MartinaLopez",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": []
+        },
+        {
+            "nombre": "SebastianAraya",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": []
+        },
+        {
+            "nombre": "CatalinaMorales",
+            "contrasena": "demo123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": []
         }
     ]
 }
