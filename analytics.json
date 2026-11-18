@@ -404,5 +404,235 @@
         "datos": {
             "producto_id": "90994500-94bd-42c9-9b67-1eee1a347b45"
         }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970404.8715777,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "login_exitoso",
+        "ts": 1794970410.9256735,
+        "datos": {}
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970411.1537337,
+        "datos": {
+            "nombre": "principal"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970413.9250462,
+        "datos": {
+            "nombre": "market"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794970421.5760822,
+        "datos": {
+            "producto_id": "baad622c-796f-4a2c-8bbb-4b8916b64829"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970421.816792,
+        "datos": {
+            "nombre": "producto"
+        }
+    },
+    {
+        "evento": "click_comprar",
+        "ts": 1794970423.8375173,
+        "datos": {
+            "producto_id": "baad622c-796f-4a2c-8bbb-4b8916b64829"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970472.7341025,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970479.1976147,
+        "datos": {
+            "nombre": "registro"
+        }
+    },
+    {
+        "evento": "registro_exitoso",
+        "ts": 1794970483.001826,
+        "datos": {}
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970483.2030554,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970489.8990335,
+        "datos": {
+            "nombre": "registro"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970491.1101418,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "login_exitoso",
+        "ts": 1794970494.038908,
+        "datos": {}
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970494.2372823,
+        "datos": {
+            "nombre": "principal"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970498.115012,
+        "datos": {
+            "nombre": "market"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794970500.2129917,
+        "datos": {
+            "producto_id": "baad622c-796f-4a2c-8bbb-4b8916b64829"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970500.4235408,
+        "datos": {
+            "nombre": "producto"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970501.6039865,
+        "datos": {
+            "nombre": "market"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794970501.9936335,
+        "datos": {
+            "producto_id": "baad622c-796f-4a2c-8bbb-4b8916b64829"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970502.2182827,
+        "datos": {
+            "nombre": "producto"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970504.7168279,
+        "datos": {
+            "nombre": "market"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794970505.414957,
+        "datos": {
+            "producto_id": "dc7ac20f-a840-44be-b213-80fcdb995304"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970505.6250956,
+        "datos": {
+            "nombre": "producto"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970511.3444016,
+        "datos": {
+            "nombre": "market"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970549.0013757,
+        "datos": {
+            "nombre": "login"
+        }
+    },
+    {
+        "evento": "login_exitoso",
+        "ts": 1794970555.92324,
+        "datos": {}
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970556.1307933,
+        "datos": {
+            "nombre": "principal"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970557.7346222,
+        "datos": {
+            "nombre": "perfil"
+        }
+    },
+    {
+        "evento": "publicacion_creada",
+        "ts": 1794970721.113092,
+        "datos": {
+            "producto_id": "fa9b7460-9b2a-4d86-89ce-4ecbd0501281"
+        }
+    },
+    {
+        "evento": "producto_visto",
+        "ts": 1794970722.449255,
+        "datos": {
+            "producto_id": "fa9b7460-9b2a-4d86-89ce-4ecbd0501281"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970722.7436721,
+        "datos": {
+            "nombre": "producto"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970731.2136714,
+        "datos": {
+            "nombre": "perfil"
+        }
+    },
+    {
+        "evento": "pantalla_vista",
+        "ts": 1794970737.6725817,
+        "datos": {
+            "nombre": "market"
+        }
     }
 ]

@@ -179,6 +179,15 @@
             "vendedor": "ValentinaCruz",
             "id": "90994500-94bd-42c9-9b67-1eee1a347b45",
             "whatsapp": "56955555555"
+        },
+        {
+            "id": "fa9b7460-9b2a-4d86-89ce-4ecbd0501281",
+            "nombre": "Mouse",
+            "precio": 7500,
+            "descripcion": "Poco uso",
+            "vendedor": "admin",
+            "whatsapp": "56995160760",
+            "imagen": "imgs/img_productos/07bc82da20dd434c9efeb149f6e5bb02.png"
         }
     ]
 }

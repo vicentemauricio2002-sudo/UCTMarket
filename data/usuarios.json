@@ -121,6 +121,12 @@
             "contrasena": "demo123",
             "usuarioFoto": "imgs/img_perfiles/placeholder.png",
             "listaDeseos": []
+        },
+        {
+            "nombre": "usuario",
+            "contrasena": "123",
+            "usuarioFoto": "imgs/img_perfiles/placeholder.png",
+            "listaDeseos": []
         }
     ]
 }
