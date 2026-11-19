@@ -11,7 +11,7 @@ El proyecto está desarrollado con **Python y KivyMD 2.0.0**, utiliza archivos J
 El proyecto organiza sus responsabilidades siguiendo una estructura basada en el patrón **Modelo-Vista-Controlador (MVC)**:
 
 - **Modelo (`models/`):** gestiona la persistencia de datos mediante JSON (`json_service.py`), las notificaciones locales (`notification_service.py`) y la comunicación con el servidor de configuración remota (`remote_config.py`).
-- **Vista (`Vista/`):** contiene la interfaz gráfica desarrollada con KivyMD, definida en `marketplace.kv`.
+- **Vista (`views/`):** contiene la interfaz gráfica desarrollada con KivyMD, definida en `marketplace.kv`.
 - **Controlador (`controllers/`):** administra la navegación, las funcionalidades y los eventos de la aplicación mediante `main.py`. También contiene `app.py`, encargado del servidor backend desarrollado con Flask.
 
 ## Funcionalidades principales
@@ -187,7 +187,7 @@ UCTMarket/
 │   ├── notification_service.py             # Función para notificaciones con Plyer
 │   └── remote_config.py                    # Configuración remota por servidor Flask
 │
-├── Vista/
+├── views/
 │   └── marketplace.kv          # Interfaz gráfica y diseño visual de pantallas
 │
 ├── .gitignore                  # Archivos y carpetas ignoradas al subir a repositorio
